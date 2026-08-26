@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
+AUTH_USER_MODEL='users.User'
 # Application definition
 
 INSTALLED_APPS = [
@@ -43,6 +43,13 @@ INSTALLED_APPS = [
     'product',
     'users',
 ]
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
+if DEBUG:
+    INSTALLED_APPS+=['debug_toolbar']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -53,6 +60,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if DEBUG:
+    MIDDLEWARE+=['debug_toolbar.middleware.DebugToolbarMiddleware']
 
 ROOT_URLCONF = 'Dokanly.urls'
 

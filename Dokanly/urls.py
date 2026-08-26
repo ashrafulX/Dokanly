@@ -16,9 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from debug_toolbar.toolbar import debug_toolbar_urls
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
+    path("users/",include('users.urls')),
+    path("products/",include('product.urls')),
+    path("orders/",include('order.urls')),
 
 ]
+if settings.DEBUG:
+   urlpatterns+= debug_toolbar_urls()
+
