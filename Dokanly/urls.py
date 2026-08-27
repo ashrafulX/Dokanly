@@ -22,9 +22,10 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
-    path("users/",include('users.urls')),
-    path("products/",include('product.urls')),
-    path("orders/",include('order.urls')),
+    # path("users/",include('users.urls')),
+    # path("products/",include('product.urls')),
+    # path("orders/",include('order.urls')),
+    path('api/',include('api.urls')),
 
 ]
 if settings.DEBUG:
