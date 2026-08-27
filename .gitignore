@@ -1,0 +1,7 @@
+venv/
+.gitignore
+db.sqlite3
+.env
+__pycache__/
+.vscode/
+fixtures/
