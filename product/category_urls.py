@@ -1,6 +1,6 @@
 from django.urls import path,include
 from product import views
 urlpatterns = [
-    path('<int:pk>/',views.view_specific_category,name='view-specific-category'),
-    path('',views.view_category,name='view-category')
+    path('<int:pk>/',views.CategoryDetails.as_view(),name='view-specific-category'),
+    path('',views.CategoryList.as_view(),name='view-category'),
 ]
