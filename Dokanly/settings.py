@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'order',
     'product',
     'users',
+    'django_filters',
 ]
 INTERNAL_IPS = [
     # ...
@@ -139,4 +140,10 @@ MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
+}
+
+REST_FRAMEWORK={
+    'COERCE_DEFIMAL_TO-STRING':False,
+    # 'DEFAULT_PAGINATION_CLASS':'rest_framewordk.pagination.PageNumberPagination',
+    # 'PAGE_SIZE':10,
 }
