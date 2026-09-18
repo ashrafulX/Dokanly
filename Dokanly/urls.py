@@ -18,14 +18,15 @@ from django.contrib import admin
 from django.urls import path,include
 from debug_toolbar.toolbar import debug_toolbar_urls
 from django.conf import settings
-
+from .views import api_root_view
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('',api_root_view),
     path("api-auth/", include("rest_framework.urls")),
     # path("users/",include('users.urls')),
     # path("products/",include('product.urls')),
     # path("orders/",include('order.urls')),
-    path('api/',include('api.urls')),
+    path('api/v1/',include('api.urls'),name='api-root'),
 
 ]
 if settings.DEBUG:
