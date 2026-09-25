@@ -152,7 +152,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Dhaka'
 
 USE_I18N = True
 
@@ -176,8 +176,15 @@ MEDIA_ROOT=BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
 MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+    "default": {
+        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+        "OPTIONS": {
+            "host": config("EMAIL_HOST"),
+            "port": config("EMAIL_PORT", cast=int),
+            "username": config("EMAIL_HOST_USER"),
+            "password": config("EMAIL_HOST_PASSWORD"),
+            "use_tls": config("EMAIL_USE_TLS", cast=bool),
+        },
     },
 }
 
@@ -202,6 +209,9 @@ SIMPLE_JWT = {
 
 
 DJOSER={
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
     'SERIALIZERS':{
         'user_create':'users.serializers.UserCreateSerializer',
         'current_user':'users.serializers.Userserializer'
@@ -220,3 +230,5 @@ SWAGGER_SETTINGS = {
       }
    }
 }
+
+
