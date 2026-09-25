@@ -28,6 +28,7 @@ class CategorySerializer(serializers.ModelSerializer):
 #     category=serializers.HyperlinkedRelatedField(queryset=Category.objects.all(),view_name='view-specific-category')
 
 class ProductImageSerilizer(serializers.ModelSerializer):
+    image=serializers.ImageField()
     class Meta:
         model=ProductImage
         fields=['id','image']

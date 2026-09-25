@@ -20,7 +20,7 @@ class ProductViewSet(ModelViewSet):
      - Support ordering by price and updated_at
 
     """
-    queryset=Product.objects.select_related('category').all()
+    queryset=Product.objects.select_related('category').prefetch_related('images').all()
     serializer_class=ProductSerializer
     filter_backends=[DjangoFilterBackend,SearchFilter,OrderingFilter]
     # filterset_fields=['category_id','price']
