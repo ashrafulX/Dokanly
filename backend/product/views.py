@@ -9,8 +9,17 @@ from rest_framework.filters import SearchFilter,OrderingFilter
 from product.pagination import DefaultPagination
 from api.permissions import IsAdminOrReadOnly
 from .permissions import IsReviewAuthorOrReadonly
+from drf_yasg.utils import swagger_auto_schema
 
 class ProductViewSet(ModelViewSet):
+    """
+    API endpoint for managing products in the e-commerce store
+     - Allow authenticated admin to create, update,and delete products
+     - Allows users to browse and filter product
+     - Support searching by name,descritipn,category
+     - Support ordering by price and updated_at
+
+    """
     queryset=Product.objects.select_related('category').all()
     serializer_class=ProductSerializer
     filter_backends=[DjangoFilterBackend,SearchFilter,OrderingFilter]
@@ -21,15 +30,26 @@ class ProductViewSet(ModelViewSet):
     ordering_fields=['price']
     # permission_classes=[DjangoModelPermissions]
     # permission_classes=[FullDjangoModelPermission]
-
     permission_classes=[IsAdminOrReadOnly]
+
+    @swagger_auto_schema(
+            operation_summary="Create a product by admin",
+            operation_description='This Allow an Admin to create a product ',
+            request_body=ProductSerializer,
+            responses={
+               201:ProductSerializer,
+               400:'Bad Request' 
+            }
+    )
+    def create(self, request, *args, **kwargs):
+        """Only authenticated admin can create product"""
+        return super().create(request, *args, **kwargs)
 
     """ 
     def get_permissions(self):
         if self.request.method == 'GET':
             return [AllowAny()]
         return [IsAdminUser()]
-
 
 
     def get_queryset(self):
@@ -40,17 +60,17 @@ class ProductViewSet(ModelViewSet):
             queryset=Product.objects.select_related('category').filter(category_id=category_id)
         return queryset
         
-"""
+    """
 
 class ProductImageViewSet(ModelViewSet):
     serializer_class=ProductImageSerilizer
     permission_classes=[IsAdminOrReadOnly]
 
     def get_queryset(self):
-        return ProductImage.objects.filter(product_id=self.kwargs['product_pk'])
+        return ProductImage.objects.filter(product_id=self.kwargs.get('product_pk'))
 
     def perform_create(self,serializer):
-        serializer.save(product_id=self.kwargs['product_pk'])
+        serializer.save(product_id=self.kwargs.get('product_pk'))
                        
 
 class CategoryViewSet(ModelViewSet):
@@ -63,7 +83,7 @@ class ReviewViewSet(ModelViewSet):
     serializer_class=ReviewSerializer
     permission_classes=[IsReviewAuthorOrReadonly]
     def get_queryset(self):
-        return Review.objects.filter(product_id=self.kwargs['product_pk'])
+        return Review.objects.filter(product_id=self.kwargs.get('product_pk'))
 
     def perform_create(self,serializer):
         serializer.save(user=self.request.user)
@@ -72,7 +92,7 @@ class ReviewViewSet(ModelViewSet):
         serializer.save(user=self.request.user)
     
     def get_serializer_context(self):
-        return {'product_id':self.kwargs['product_pk']}
+        return {'product_id':self.kwargs.get('product_pk')}
 
 
 
