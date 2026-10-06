@@ -5,11 +5,8 @@
   <img src="https://img.shields.io/badge/DRF-A30000?style=for-the-badge&logo=django&logoColor=white" alt="DRF" />
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
   <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
-</p>
-
-<p>
   <a href="https://dokanly.vercel.app" target="_blank">
-    <img src="https://img.shields.io/badge/🟢_Live_Store-16a34a?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Store" />
+    <img src="https://img.shields.io/badge/Live_Store-16a34a?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Store" />
   </a>
   <a href="https://dokanly-server.vercel.app/swagger/" target="_blank">
     <img src="https://img.shields.io/badge/Backend_API-0284c7?style=for-the-badge&logo=django&logoColor=white" alt="Backend API" />
