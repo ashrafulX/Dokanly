@@ -1,10 +1,20 @@
 # Dokanly — Full-Stack E-Commerce System
 
-[![Live Store](https://img.shields.io/badge/Live_Store-dokanly.vercel.app-000000?style=flat-square&logo=vercel&logoColor=white)](https://dokanly.vercel.app)
-[![Backend API](https://img.shields.io/badge/Backend_API-Swagger_Docs-092E20?style=flat-square&logo=django&logoColor=white)](https://dokanly-server.vercel.app/swagger/)
-[![Android App](https://img.shields.io/badge/Android_App-Download_APK-3DDC84?style=flat-square&logo=android&logoColor=white)](https://github.com/ashrafulX/Dokanly/releases)
+<p>
+  <a href="https://dokanly.vercel.app" target="_blank">
+    <img src="https://img.shields.io/badge/React-Live_Store-000000?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Live Store" />
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://dokanly-server.vercel.app/swagger/" target="_blank">
+    <img src="https://img.shields.io/badge/Django_DRF-Backend_API-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django DRF Backend API" />
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/ashrafulX/Dokanly/releases" target="_blank">
+    <img src="https://img.shields.io/badge/Android-Download_APK-2563EB?style=for-the-badge&logo=android&logoColor=white" alt="Android Download APK" />
+  </a>
+</p>
 
-Dokanly is a full-stack e-commerce system built with a **Django REST Framework** backend, a **React** web store, and a **React Native** Android mobile app. It includes secure JWT authentication, real-time product search & filtering, Cloudinary image management, synchronized shopping carts, and a complete order checkout lifecycle.
+Dokanly is a full-stack e-commerce system built with a **Django REST Framework** backend, a **React (Vite)** web store, and a **React Native (Expo)** Android mobile app. It includes secure JWT authentication, real-time product search & filtering, Cloudinary image management, synchronized shopping carts, and a complete order checkout lifecycle.
 
 ---
 
