@@ -5,14 +5,17 @@
   <img src="https://img.shields.io/badge/DRF-A30000?style=for-the-badge&logo=django&logoColor=white" alt="DRF" />
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
   <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+</p>
+
+<p>
   <a href="https://dokanly.vercel.app" target="_blank">
-    <img src="https://img.shields.io/badge/Live_Store-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Store" />
+    <img src="https://img.shields.io/badge/🟢_Live_Store-16a34a?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Store" />
   </a>
   <a href="https://dokanly-server.vercel.app/swagger/" target="_blank">
-    <img src="https://img.shields.io/badge/Backend_API-Swagger-1f883d?style=for-the-badge&logo=swagger&logoColor=white" alt="Backend API" />
+    <img src="https://img.shields.io/badge/Backend_API-0284c7?style=for-the-badge&logo=django&logoColor=white" alt="Backend API" />
   </a>
   <a href="https://github.com/ashrafulX/Dokanly/releases" target="_blank">
-    <img src="https://img.shields.io/badge/Android_App-Download_APK-2563EB?style=for-the-badge&logo=android&logoColor=white" alt="Android App" />
+    <img src="https://img.shields.io/badge/Android_App-2563eb?style=for-the-badge&logo=android&logoColor=white" alt="Android App" />
   </a>
 </p>
 
