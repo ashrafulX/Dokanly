@@ -1,39 +1,14 @@
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=1,11,19,25&height=180&section=header&text=DOKANLY&fontSize=52&fontAlignY=38&fontColor=ffffff&desc=Modern%20Full-Stack%20E-Commerce%20Ecosystem&descSize=16&descAlignY=62&descColor=e0e7ff" width="100%" alt="Dokanly Banner" />
-</p>
+# Dokanly — Full-Stack E-Commerce System
 
-<p align="center">
-  <a href="https://dokanly.vercel.app">
-    <img src="https://img.shields.io/badge/Live%20Store-dokanly.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Store" />
-  </a>
-  <a href="https://dokanly-server.vercel.app/swagger/">
-    <img src="https://img.shields.io/badge/Backend%20API-Swagger%20Docs-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Swagger Docs" />
-  </a>
-  <a href="https://github.com/ashrafulX/Dokanly/releases">
-    <img src="https://img.shields.io/badge/Android%20App-Download%20APK-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" />
-  </a>
-</p>
+[![Live Store](https://img.shields.io/badge/Live_Store-dokanly.vercel.app-000000?style=flat-square&logo=vercel&logoColor=white)](https://dokanly.vercel.app)
+[![Backend API](https://img.shields.io/badge/Backend_API-Swagger_Docs-092E20?style=flat-square&logo=django&logoColor=white)](https://dokanly-server.vercel.app/swagger/)
+[![Android App](https://img.shields.io/badge/Android_App-Download_APK-3DDC84?style=flat-square&logo=android&logoColor=white)](https://github.com/ashrafulX/Dokanly/releases)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Django-092E20?style=flat-square&logo=django&logoColor=white" alt="Django" />
-  <img src="https://img.shields.io/badge/Django_REST_Framework-A30000?style=flat-square&logo=django&logoColor=white" alt="DRF" />
-  <img src="https://img.shields.io/badge/React_19-20232A?style=flat-square&logo=react&logoColor=61DAFB" alt="React" />
-  <img src="https://img.shields.io/badge/React_Native-20232A?style=flat-square&logo=react&logoColor=61DAFB" alt="React Native" />
-  <img src="https://img.shields.io/badge/Expo-000020?style=flat-square&logo=expo&logoColor=white" alt="Expo" />
-  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white" alt="Postgres" />
-  <img src="https://img.shields.io/badge/Cloudinary-3448C5?style=flat-square&logo=cloudinary&logoColor=white" alt="Cloudinary" />
-  <img src="https://img.shields.io/badge/JWT_Auth-000000?style=flat-square&logo=jsonwebtokens&logoColor=white" alt="JWT" />
-</p>
+Dokanly is a full-stack e-commerce system built with a **Django REST Framework** backend, a **React (Vite)** web store, and a **React Native (Expo)** Android mobile app. It includes secure JWT authentication, real-time product search & filtering, Cloudinary image management, synchronized shopping carts, and a complete order checkout lifecycle.
 
 ---
 
-### 🌟 About Dokanly
-
-**Dokanly** is a complete, multi-platform e-commerce solution built with a **Django REST Framework** backend, a **React (Vite)** web frontend, and a **React Native (Expo)** Android mobile app. It provides secure JWT authentication, real-time product filtering and search, Cloudinary media hosting, synchronized shopping carts, and a streamlined order checkout lifecycle.
-
----
-
-## 🌐 Live Deployments
+## 🌐 Live Services
 
 * 🌐 **Web Store:** [https://dokanly.vercel.app](https://dokanly.vercel.app)
 * ⚡ **Backend API & Swagger:** [https://dokanly-server.vercel.app/swagger/](https://dokanly-server.vercel.app/swagger/)
