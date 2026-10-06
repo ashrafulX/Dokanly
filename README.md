@@ -4,7 +4,7 @@
 [![Backend API](https://img.shields.io/badge/Backend_API-Swagger_Docs-092E20?style=flat-square&logo=django&logoColor=white)](https://dokanly-server.vercel.app/swagger/)
 [![Android App](https://img.shields.io/badge/Android_App-Download_APK-3DDC84?style=flat-square&logo=android&logoColor=white)](https://github.com/ashrafulX/Dokanly/releases)
 
-Dokanly is a full-stack e-commerce system built with a **Django REST Framework** backend, a **React (Vite)** web store, and a **React Native (Expo)** Android mobile app. It includes secure JWT authentication, real-time product search & filtering, Cloudinary image management, synchronized shopping carts, and a complete order checkout lifecycle.
+Dokanly is a full-stack e-commerce system built with a **Django REST Framework** backend, a **React** web store, and a **React Native** Android mobile app. It includes secure JWT authentication, real-time product search & filtering, Cloudinary image management, synchronized shopping carts, and a complete order checkout lifecycle.
 
 ---
 
