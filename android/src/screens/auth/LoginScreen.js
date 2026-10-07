@@ -7,16 +7,18 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableOpacity,
-  Alert,
+  SafeAreaView,
 } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
+import { useAppTheme } from '../../context/ThemeContext';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
-import { COLORS, SIZES } from '../../constants/theme';
+import { SIZES } from '../../constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 
 const LoginScreen = ({ navigation }) => {
   const { login } = useAuth();
+  const { theme } = useAppTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -39,77 +41,99 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        keyboardShouldPersistTaps="handled"
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
       >
-        <View style={styles.header}>
-          <View style={styles.iconCircle}>
-            <Ionicons name="bag-handle" size={40} color={COLORS.primary} />
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.header}>
+            <View style={[styles.iconCircle, { backgroundColor: theme.primaryLight }]}>
+              <Ionicons name="bag-handle" size={40} color={theme.primary} />
+            </View>
+            <Text style={[styles.brandTitle, { color: theme.text }]}>
+              Dokan<Text style={{ color: theme.primary }}>ly</Text>
+            </Text>
+            <Text style={[styles.subtitle, { color: theme.textMuted }]}>
+              Sign in to manage your orders & cart
+            </Text>
           </View>
-          <Text style={styles.brandTitle}>Dokanly</Text>
-          <Text style={styles.subtitle}>Sign in to continue your shopping</Text>
-        </View>
 
-        {!!errorMessage && (
-          <View style={styles.errorBox}>
-            <Ionicons name="alert-circle" size={20} color={COLORS.danger} />
-            <Text style={styles.errorBoxText}>{errorMessage}</Text>
+          {!!errorMessage && (
+            <View
+              style={[
+                styles.errorBox,
+                {
+                  backgroundColor: 'rgba(239, 68, 68, 0.12)',
+                  borderColor: theme.danger,
+                },
+              ]}
+            >
+              <Ionicons name="alert-circle" size={20} color={theme.danger} />
+              <Text style={[styles.errorBoxText, { color: theme.danger }]}>
+                {errorMessage}
+              </Text>
+            </View>
+          )}
+
+          <View style={styles.form}>
+            <CustomInput
+              label="Email Address"
+              placeholder="Enter your email"
+              iconName="mail-outline"
+              keyboardType="email-address"
+              value={email}
+              onChangeText={(text) => {
+                setEmail(text);
+                setErrorMessage('');
+              }}
+            />
+
+            <CustomInput
+              label="Password"
+              placeholder="Enter your password"
+              iconName="lock-closed-outline"
+              secureTextEntry
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+                setErrorMessage('');
+              }}
+            />
+
+            <CustomButton
+              title="Sign In"
+              onPress={handleLogin}
+              loading={loading}
+              style={styles.loginBtn}
+            />
+
+            <View style={styles.footer}>
+              <Text style={[styles.footerText, { color: theme.textMuted }]}>
+                Don't have an account?{' '}
+              </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                <Text style={[styles.linkText, { color: theme.primary }]}>
+                  Create Account
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        )}
-
-        <View style={styles.form}>
-          <CustomInput
-            label="Email Address"
-            placeholder="Enter your email"
-            iconName="mail-outline"
-            keyboardType="email-address"
-            value={email}
-            onChangeText={(text) => {
-              setEmail(text);
-              setErrorMessage('');
-            }}
-          />
-
-          <CustomInput
-            label="Password"
-            placeholder="Enter your password"
-            iconName="lock-closed-outline"
-            secureTextEntry
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              setErrorMessage('');
-            }}
-          />
-
-          <CustomButton
-            title="Sign In"
-            onPress={handleLogin}
-            loading={loading}
-            style={styles.loginBtn}
-          />
-
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>Don't have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-              <Text style={styles.linkText}>Create Account</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -124,36 +148,32 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: COLORS.primaryLight,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
   },
   brandTitle: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: COLORS.text,
+    fontSize: 30,
+    fontWeight: '900',
+    letterSpacing: -0.5,
   },
   subtitle: {
     fontSize: 14,
-    color: COLORS.textMuted,
     marginTop: 6,
   },
   errorBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fee2e2',
     borderWidth: 1,
-    borderColor: '#fca5a5',
     padding: 12,
     borderRadius: SIZES.radiusMd,
     marginBottom: 16,
     gap: 8,
   },
   errorBoxText: {
-    color: COLORS.danger,
     fontSize: 14,
     flex: 1,
+    fontWeight: '500',
   },
   form: {
     width: '100%',
@@ -168,14 +188,11 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 14,
-    color: COLORS.textMuted,
   },
   linkText: {
     fontSize: 14,
-    fontWeight: '700',
-    color: COLORS.primary,
+    fontWeight: '800',
   },
 });
 
 export default LoginScreen;
-

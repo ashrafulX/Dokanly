@@ -10,7 +10,7 @@ import {
 import apiClient from '../../api/client';
 import ProductCard from '../../components/ProductCard';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { COLORS } from '../../constants/theme';
+import { useAppTheme } from '../../context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 
 const CategoryProductsScreen = ({ route, navigation }) => {
@@ -18,6 +18,7 @@ const CategoryProductsScreen = ({ route, navigation }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const { theme } = useAppTheme();
 
   useEffect(() => {
     navigation.setOptions({ title: categoryName || 'Category Products' });
@@ -49,7 +50,7 @@ const CategoryProductsScreen = ({ route, navigation }) => {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
       <FlatList
         data={products}
         numColumns={2}
@@ -59,7 +60,7 @@ const CategoryProductsScreen = ({ route, navigation }) => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={[COLORS.primary]}
+            colors={[theme.primary]}
           />
         }
         renderItem={({ item }) => (
@@ -72,8 +73,10 @@ const CategoryProductsScreen = ({ route, navigation }) => {
         )}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Ionicons name="basket-outline" size={56} color="#cbd5e1" />
-            <Text style={styles.emptyText}>No products found in this category.</Text>
+            <Ionicons name="basket-outline" size={56} color={theme.textMuted} />
+            <Text style={[styles.emptyText, { color: theme.textMuted }]}>
+              No products found in this category.
+            </Text>
           </View>
         }
       />
@@ -84,7 +87,6 @@ const CategoryProductsScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.background,
   },
   listContainer: {
     padding: 12,
@@ -96,10 +98,8 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     marginTop: 12,
-    fontSize: 16,
-    color: COLORS.textMuted,
+    fontSize: 15,
   },
 });
 
 export default CategoryProductsScreen;
-

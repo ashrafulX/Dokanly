@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import {
-  View,
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
+import { useAppTheme } from '../../context/ThemeContext';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
-import { COLORS } from '../../constants/theme';
 
 const EditProfileScreen = ({ navigation }) => {
   const { user, updateProfile } = useAuth();
+  const { theme } = useAppTheme();
 
   const [formData, setFormData] = useState({
     first_name: user?.first_name || '',
@@ -53,53 +54,57 @@ const EditProfileScreen = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <CustomInput
-          label="First Name"
-          value={formData.first_name}
-          onChangeText={(v) => handleChange('first_name', v)}
-        />
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <CustomInput
+            label="First Name"
+            value={formData.first_name}
+            onChangeText={(v) => handleChange('first_name', v)}
+          />
 
-        <CustomInput
-          label="Last Name"
-          value={formData.last_name}
-          onChangeText={(v) => handleChange('last_name', v)}
-        />
+          <CustomInput
+            label="Last Name"
+            value={formData.last_name}
+            onChangeText={(v) => handleChange('last_name', v)}
+          />
 
-        <CustomInput
-          label="Phone Number"
-          value={formData.phone_number}
-          onChangeText={(v) => handleChange('phone_number', v)}
-          keyboardType="phone-pad"
-        />
+          <CustomInput
+            label="Phone Number"
+            value={formData.phone_number}
+            onChangeText={(v) => handleChange('phone_number', v)}
+            keyboardType="phone-pad"
+          />
 
-        <CustomInput
-          label="Delivery Address"
-          value={formData.address}
-          onChangeText={(v) => handleChange('address', v)}
-          multiline
-          numberOfLines={3}
-        />
+          <CustomInput
+            label="Delivery Address"
+            value={formData.address}
+            onChangeText={(v) => handleChange('address', v)}
+            multiline
+            numberOfLines={3}
+          />
 
-        <CustomButton
-          title="Save Changes"
-          onPress={handleSave}
-          loading={loading}
-          style={styles.saveBtn}
-        />
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <CustomButton
+            title="Save Changes"
+            onPress={handleSave}
+            loading={loading}
+            style={styles.saveBtn}
+          />
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
   },
   scrollContent: {
     padding: 20,
@@ -110,4 +115,3 @@ const styles = StyleSheet.create({
 });
 
 export default EditProfileScreen;
-

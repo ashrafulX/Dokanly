@@ -10,12 +10,14 @@ import {
   Modal,
   Alert,
   Dimensions,
+  SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../api/client';
-import { COLORS, SIZES, SHADOWS } from '../../constants/theme';
+import { SIZES, SHADOWS } from '../../constants/theme';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
+import { useAppTheme } from '../../context/ThemeContext';
 import CustomButton from '../../components/CustomButton';
 import CustomInput from '../../components/CustomInput';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -26,6 +28,7 @@ const ProductDetailScreen = ({ route, navigation }) => {
   const { productId } = route.params;
   const { addToCart, loading: cartLoading } = useCart();
   const { user, isAuthenticated } = useAuth();
+  const { theme } = useAppTheme();
 
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -73,10 +76,10 @@ const ProductDetailScreen = ({ route, navigation }) => {
     if (res.requireAuth) {
       Alert.alert('Login Required', res.message, [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Login', onPress: () => navigation.navigate('ProfileTab') },
+        { text: 'Sign In', onPress: () => navigation.navigate('ProfileTab') },
       ]);
     } else if (res.success) {
-      Alert.alert('Success', 'Product added to your cart!', [
+      Alert.alert('🎉 Added to Cart', `${product.name} (${quantity} pcs) has been added to your shopping cart.`, [
         { text: 'Continue Shopping' },
         { text: 'Go to Cart', onPress: () => navigation.navigate('CartTab') },
       ]);
@@ -107,7 +110,7 @@ const ProductDetailScreen = ({ route, navigation }) => {
       setRating(5);
       setReviewModalVisible(false);
       fetchReviews();
-      Alert.alert('Thank You', 'Your review has been submitted!');
+      Alert.alert('Thank You', 'Your review has been submitted successfully!');
     } catch (error) {
       console.error('Review submit error:', error.response?.data || error);
       Alert.alert('Error', 'Could not post review. Please try again.');
@@ -144,10 +147,15 @@ const ProductDetailScreen = ({ route, navigation }) => {
   const inStock = product.stock > 0;
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Image Slider */}
-        <View style={styles.imageGallery}>
+        <View
+          style={[
+            styles.imageGallery,
+            { backgroundColor: theme.mode === 'dark' ? '#0f172a' : '#f8fafc' },
+          ]}
+        >
           {images.length > 0 ? (
             <FlatList
               horizontal
@@ -169,7 +177,7 @@ const ProductDetailScreen = ({ route, navigation }) => {
             />
           ) : (
             <View style={styles.placeholderGallery}>
-              <Ionicons name="image-outline" size={64} color="#94a3b8" />
+              <Ionicons name="bag-handle-outline" size={64} color={theme.textMuted} />
             </View>
           )}
 
@@ -180,7 +188,11 @@ const ProductDetailScreen = ({ route, navigation }) => {
                   key={i}
                   style={[
                     styles.indicator,
-                    i === activeImageIndex && styles.indicatorActive,
+                    { backgroundColor: theme.mode === 'dark' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.15)' },
+                    i === activeImageIndex && {
+                      backgroundColor: theme.primary,
+                      width: 20,
+                    },
                   ]}
                 />
               ))}
@@ -189,19 +201,21 @@ const ProductDetailScreen = ({ route, navigation }) => {
         </View>
 
         {/* Product Details Section */}
-        <View style={styles.infoCard}>
+        <View style={[styles.infoCard, { backgroundColor: theme.card }]}>
           <View style={styles.titleRow}>
-            <Text style={styles.productName}>{product.name}</Text>
+            <Text style={[styles.productName, { color: theme.text }]}>
+              {product.name}
+            </Text>
             <View
               style={[
                 styles.stockBadge,
-                { backgroundColor: inStock ? '#dcfce7' : '#fee2e2' },
+                { backgroundColor: inStock ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)' },
               ]}
             >
               <Text
                 style={[
                   styles.stockBadgeText,
-                  { color: inStock ? COLORS.accent : COLORS.danger },
+                  { color: inStock ? theme.accent : theme.danger },
                 ]}
               >
                 {inStock ? `${product.stock} In Stock` : 'Out of Stock'}
@@ -211,68 +225,92 @@ const ProductDetailScreen = ({ route, navigation }) => {
 
           {/* Pricing */}
           <View style={styles.priceContainer}>
-            <Text style={styles.price}>${Number(product.price).toFixed(2)}</Text>
+            <Text style={[styles.price, { color: theme.primary }]}>
+              ${Number(product.price).toFixed(2)}
+            </Text>
             {product.price_with_tax && (
-              <Text style={styles.taxPrice}>
-                (Tax incl.: ${Number(product.price_with_tax).toFixed(2)})
+              <Text style={[styles.taxPrice, { color: theme.textMuted }]}>
+                (Tax incl: ${Number(product.price_with_tax).toFixed(2)})
               </Text>
             )}
           </View>
 
           {/* Description */}
-          <View style={styles.section}>
-            <Text style={styles.sectionHeading}>Description</Text>
-            <Text style={styles.descriptionText}>
+          <View style={[styles.section, { borderTopColor: theme.border }]}>
+            <Text style={[styles.sectionHeading, { color: theme.text }]}>
+              Description
+            </Text>
+            <Text style={[styles.descriptionText, { color: theme.mode === 'dark' ? '#cbd5e1' : '#475569' }]}>
               {product.description || 'No detailed description available for this item.'}
             </Text>
           </View>
 
           {/* Quantity Selector */}
           {inStock && (
-            <View style={styles.quantitySection}>
-              <Text style={styles.sectionHeading}>Quantity</Text>
-              <View style={styles.quantityControls}>
+            <View style={[styles.quantitySection, { borderTopColor: theme.border }]}>
+              <Text style={[styles.sectionHeading, { color: theme.text }]}>
+                Quantity
+              </Text>
+              <View
+                style={[
+                  styles.quantityControls,
+                  { backgroundColor: theme.surface, borderColor: theme.border },
+                ]}
+              >
                 <TouchableOpacity
-                  style={styles.qtyBtn}
+                  style={[styles.qtyBtn, { backgroundColor: theme.card }]}
                   onPress={() => setQuantity(Math.max(1, quantity - 1))}
                 >
-                  <Ionicons name="remove" size={20} color={COLORS.text} />
+                  <Ionicons name="remove" size={18} color={theme.text} />
                 </TouchableOpacity>
-                <Text style={styles.qtyText}>{quantity}</Text>
+                <Text style={[styles.qtyText, { color: theme.text }]}>
+                  {quantity}
+                </Text>
                 <TouchableOpacity
-                  style={styles.qtyBtn}
+                  style={[styles.qtyBtn, { backgroundColor: theme.card }]}
                   onPress={() => setQuantity(Math.min(product.stock, quantity + 1))}
                 >
-                  <Ionicons name="add" size={20} color={COLORS.text} />
+                  <Ionicons name="add" size={18} color={theme.text} />
                 </TouchableOpacity>
               </View>
             </View>
           )}
 
           {/* Reviews Section */}
-          <View style={styles.section}>
+          <View style={[styles.section, { borderTopColor: theme.border }]}>
             <View style={styles.reviewsHeader}>
-              <Text style={styles.sectionHeading}>
+              <Text style={[styles.sectionHeading, { color: theme.text }]}>
                 Customer Reviews ({reviews.length})
               </Text>
               <TouchableOpacity
                 onPress={() => setReviewModalVisible(true)}
                 style={styles.writeReviewBtn}
               >
-                <Ionicons name="create-outline" size={16} color={COLORS.primary} />
-                <Text style={styles.writeReviewText}>Write Review</Text>
+                <Ionicons name="create-outline" size={16} color={theme.primary} />
+                <Text style={[styles.writeReviewText, { color: theme.primary }]}>
+                  Write Review
+                </Text>
               </TouchableOpacity>
             </View>
 
             {reviews.length === 0 ? (
-              <Text style={styles.noReviews}>
+              <Text style={[styles.noReviews, { color: theme.textMuted }]}>
                 No reviews yet. Be the first to review this product!
               </Text>
             ) : (
               reviews.map((rev) => (
-                <View key={rev.id} style={styles.reviewItem}>
+                <View
+                  key={rev.id}
+                  style={[
+                    styles.reviewItem,
+                    {
+                      backgroundColor: theme.surface,
+                      borderColor: theme.border,
+                    },
+                  ]}
+                >
                   <View style={styles.reviewTopRow}>
-                    <Text style={styles.reviewerName}>
+                    <Text style={[styles.reviewerName, { color: theme.text }]}>
                       {rev.user?.name || 'Verified Customer'}
                     </Text>
                     <View style={styles.starsContainer}>
@@ -280,19 +318,28 @@ const ProductDetailScreen = ({ route, navigation }) => {
                         <Ionicons
                           key={star}
                           name={star <= rev.ratings ? 'star' : 'star-outline'}
-                          size={14}
-                          color={COLORS.star}
+                          size={13}
+                          color={theme.star}
                         />
                       ))}
                     </View>
                   </View>
-                  <Text style={styles.reviewComment}>{rev.comment}</Text>
+                  <Text
+                    style={[
+                      styles.reviewComment,
+                      { color: theme.mode === 'dark' ? '#cbd5e1' : '#475569' },
+                    ]}
+                  >
+                    {rev.comment}
+                  </Text>
                   {user && rev.user?.id === user.id && (
                     <TouchableOpacity
                       onPress={() => handleDeleteReview(rev.id)}
                       style={styles.deleteReviewBtn}
                     >
-                      <Text style={styles.deleteReviewText}>Delete</Text>
+                      <Text style={[styles.deleteReviewText, { color: theme.danger }]}>
+                        Delete
+                      </Text>
                     </TouchableOpacity>
                   )}
                 </View>
@@ -303,10 +350,21 @@ const ProductDetailScreen = ({ route, navigation }) => {
       </ScrollView>
 
       {/* Bottom Sticky Action Bar */}
-      <View style={[styles.bottomBar, SHADOWS.medium]}>
+      <View
+        style={[
+          styles.bottomBar,
+          {
+            backgroundColor: theme.card,
+            borderTopColor: theme.border,
+          },
+          theme.mode === 'light' && SHADOWS.light,
+        ]}
+      >
         <View style={styles.bottomPriceCol}>
-          <Text style={styles.bottomTotalLabel}>Total Price</Text>
-          <Text style={styles.bottomTotalPrice}>
+          <Text style={[styles.bottomTotalLabel, { color: theme.textMuted }]}>
+            Total Amount
+          </Text>
+          <Text style={[styles.bottomTotalPrice, { color: theme.primary }]}>
             ${(Number(product.price) * quantity).toFixed(2)}
           </Text>
         </View>
@@ -316,7 +374,7 @@ const ProductDetailScreen = ({ route, navigation }) => {
           disabled={!inStock}
           loading={cartLoading}
           style={styles.addToCartBtn}
-          icon={<Ionicons name="cart" size={20} color="#ffffff" />}
+          icon={<Ionicons name="cart" size={19} color="#ffffff" />}
         />
       </View>
 
@@ -328,23 +386,27 @@ const ProductDetailScreen = ({ route, navigation }) => {
         onRequestClose={() => setReviewModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+          <View style={[styles.modalContent, { backgroundColor: theme.card }]}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Rate & Review</Text>
+              <Text style={[styles.modalTitle, { color: theme.text }]}>
+                Rate & Review Product
+              </Text>
               <TouchableOpacity onPress={() => setReviewModalVisible(false)}>
-                <Ionicons name="close" size={24} color={COLORS.text} />
+                <Ionicons name="close" size={24} color={theme.text} />
               </TouchableOpacity>
             </View>
 
             {/* Star Picker */}
-            <Text style={styles.starLabel}>Select your rating:</Text>
+            <Text style={[styles.starLabel, { color: theme.textMuted }]}>
+              Select your rating:
+            </Text>
             <View style={styles.starPickerRow}>
               {[1, 2, 3, 4, 5].map((val) => (
                 <TouchableOpacity key={val} onPress={() => setRating(val)}>
                   <Ionicons
                     name={val <= rating ? 'star' : 'star-outline'}
                     size={32}
-                    color={COLORS.star}
+                    color={theme.star}
                     style={{ marginHorizontal: 4 }}
                   />
                 </TouchableOpacity>
@@ -369,37 +431,35 @@ const ProductDetailScreen = ({ route, navigation }) => {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: COLORS.background,
   },
   scrollContent: {
-    paddingBottom: 100,
+    paddingBottom: 110,
   },
   imageGallery: {
     width: SCREEN_WIDTH,
-    height: 300,
-    backgroundColor: '#f1f5f9',
+    height: 310,
     position: 'relative',
   },
   galleryImage: {
     width: SCREEN_WIDTH,
-    height: 300,
+    height: 310,
   },
   placeholderGallery: {
     width: SCREEN_WIDTH,
-    height: 300,
+    height: 310,
     justifyContent: 'center',
     alignItems: 'center',
   },
   indicatorContainer: {
     position: 'absolute',
-    bottom: 12,
+    bottom: 14,
     flexDirection: 'row',
     alignSelf: 'center',
     gap: 6,
@@ -408,14 +468,8 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
-  },
-  indicatorActive: {
-    backgroundColor: COLORS.primary,
-    width: 18,
   },
   infoCard: {
-    backgroundColor: '#ffffff',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     marginTop: -20,
@@ -429,8 +483,7 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontSize: 22,
-    fontWeight: '700',
-    color: COLORS.text,
+    fontWeight: '800',
     flex: 1,
   },
   stockBadge: {
@@ -450,57 +503,49 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 26,
-    fontWeight: '800',
-    color: COLORS.primary,
+    fontWeight: '900',
   },
   taxPrice: {
     fontSize: 13,
-    color: COLORS.textMuted,
   },
   section: {
     marginTop: 20,
     borderTopWidth: 1,
-    borderTopColor: COLORS.border,
     paddingTop: 16,
   },
   sectionHeading: {
     fontSize: 16,
-    fontWeight: '700',
-    color: COLORS.text,
+    fontWeight: '800',
     marginBottom: 8,
   },
   descriptionText: {
     fontSize: 14,
     lineHeight: 22,
-    color: '#475569',
   },
   quantitySection: {
     marginTop: 20,
     borderTopWidth: 1,
-    borderTopColor: COLORS.border,
     paddingTop: 16,
   },
   quantityControls: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f1f5f9',
     alignSelf: 'flex-start',
     borderRadius: SIZES.radiusMd,
-    padding: 4,
+    padding: 3,
+    borderWidth: 1,
   },
   qtyBtn: {
     width: 36,
     height: 36,
-    backgroundColor: '#ffffff',
     borderRadius: SIZES.radiusSm,
     justifyContent: 'center',
     alignItems: 'center',
   },
   qtyText: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '800',
     marginHorizontal: 16,
-    color: COLORS.text,
   },
   reviewsHeader: {
     flexDirection: 'row',
@@ -515,21 +560,17 @@ const styles = StyleSheet.create({
   },
   writeReviewText: {
     fontSize: 13,
-    fontWeight: '600',
-    color: COLORS.primary,
+    fontWeight: '700',
   },
   noReviews: {
     fontSize: 14,
-    color: COLORS.textMuted,
     fontStyle: 'italic',
   },
   reviewItem: {
-    backgroundColor: '#f8fafc',
     padding: 12,
     borderRadius: SIZES.radiusMd,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: COLORS.border,
   },
   reviewTopRow: {
     flexDirection: 'row',
@@ -538,15 +579,13 @@ const styles = StyleSheet.create({
   },
   reviewerName: {
     fontSize: 14,
-    fontWeight: '600',
-    color: COLORS.text,
+    fontWeight: '700',
   },
   starsContainer: {
     flexDirection: 'row',
   },
   reviewComment: {
     fontSize: 13,
-    color: '#475569',
     marginTop: 6,
   },
   deleteReviewBtn: {
@@ -555,46 +594,41 @@ const styles = StyleSheet.create({
   },
   deleteReviewText: {
     fontSize: 12,
-    color: COLORS.danger,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   bottomBar: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#ffffff',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 14,
     borderTopWidth: 1,
-    borderTopColor: COLORS.border,
   },
   bottomPriceCol: {
     flex: 1,
   },
   bottomTotalLabel: {
-    fontSize: 12,
-    color: COLORS.textMuted,
+    fontSize: 11,
+    fontWeight: '600',
   },
   bottomTotalPrice: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: COLORS.text,
+    fontSize: 22,
+    fontWeight: '900',
   },
   addToCartBtn: {
     flex: 1.3,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#ffffff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
     padding: 24,
   },
   modalHeader: {
@@ -605,12 +639,10 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: '700',
-    color: COLORS.text,
+    fontWeight: '800',
   },
   starLabel: {
     fontSize: 14,
-    color: COLORS.textMuted,
     marginBottom: 8,
   },
   starPickerRow: {
@@ -621,4 +653,3 @@ const styles = StyleSheet.create({
 });
 
 export default ProductDetailScreen;
-

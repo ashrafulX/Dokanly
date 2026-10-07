@@ -11,12 +11,14 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../api/client';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { COLORS, SIZES, SHADOWS } from '../../constants/theme';
+import { SIZES, SHADOWS } from '../../constants/theme';
+import { useAppTheme } from '../../context/ThemeContext';
 
 const CategoryListScreen = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const { theme } = useAppTheme();
 
   useEffect(() => {
     fetchCategories();
@@ -45,7 +47,7 @@ const CategoryListScreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
       <FlatList
         data={categories}
         keyExtractor={(item) => item.id.toString()}
@@ -54,12 +56,19 @@ const CategoryListScreen = ({ navigation }) => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={[COLORS.primary]}
+            colors={[theme.primary]}
           />
         }
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={[styles.categoryCard, SHADOWS.small]}
+            style={[
+              styles.categoryCard,
+              {
+                backgroundColor: theme.card,
+                borderColor: theme.border,
+              },
+              theme.mode === 'light' && SHADOWS.light,
+            ]}
             onPress={() =>
               navigation.navigate('CategoryProducts', {
                 categoryId: item.id,
@@ -67,21 +76,23 @@ const CategoryListScreen = ({ navigation }) => {
               })
             }
           >
-            <View style={styles.iconCircle}>
-              <Ionicons name="grid" size={24} color={COLORS.primary} />
+            <View style={[styles.iconCircle, { backgroundColor: theme.primaryLight }]}>
+              <Ionicons name="grid" size={22} color={theme.primary} />
             </View>
             <View style={styles.categoryInfo}>
-              <Text style={styles.categoryName}>{item.name}</Text>
+              <Text style={[styles.categoryName, { color: theme.text }]}>
+                {item.name}
+              </Text>
               {item.description ? (
-                <Text style={styles.categoryDesc} numberOfLines={1}>
+                <Text style={[styles.categoryDesc, { color: theme.textMuted }]} numberOfLines={1}>
                   {item.description}
                 </Text>
               ) : null}
-              <Text style={styles.productCount}>
+              <Text style={[styles.productCount, { color: theme.primary }]}>
                 {item.product_count || 0} Products available
               </Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color={COLORS.textMuted} />
+            <Ionicons name="chevron-forward" size={19} color={theme.textMuted} />
           </TouchableOpacity>
         )}
       />
@@ -92,7 +103,6 @@ const CategoryListScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.background,
   },
   listContainer: {
     padding: 16,
@@ -101,17 +111,14 @@ const styles = StyleSheet.create({
   categoryCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
     borderRadius: SIZES.radiusMd,
     padding: 16,
     borderWidth: 1,
-    borderColor: COLORS.border,
   },
   iconCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: COLORS.primaryLight,
+    width: 46,
+    height: 46,
+    borderRadius: 23,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 14,
@@ -121,21 +128,17 @@ const styles = StyleSheet.create({
   },
   categoryName: {
     fontSize: 16,
-    fontWeight: '700',
-    color: COLORS.text,
+    fontWeight: '800',
   },
   categoryDesc: {
     fontSize: 12,
-    color: COLORS.textMuted,
     marginTop: 2,
   },
   productCount: {
     fontSize: 12,
-    color: COLORS.primary,
-    fontWeight: '600',
+    fontWeight: '700',
     marginTop: 4,
   },
 });
 
 export default CategoryListScreen;
-

@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { COLORS, SIZES, SHADOWS } from '../constants/theme';
+import { SIZES, SHADOWS } from '../constants/theme';
+import { useAppTheme } from '../context/ThemeContext';
 
 const CustomButton = ({
   title,
@@ -12,36 +13,42 @@ const CustomButton = ({
   textStyle,
   icon,
 }) => {
+  const { theme } = useAppTheme();
+
   const getBackgroundColor = () => {
-    if (disabled) return '#cbd5e1';
+    if (disabled) return theme.mode === 'dark' ? '#334155' : '#e2e8f0';
     switch (variant) {
       case 'secondary':
-        return COLORS.secondary;
+        return theme.secondary;
       case 'danger':
-        return COLORS.danger;
+        return theme.danger;
       case 'outline':
         return 'transparent';
       case 'primary':
       default:
-        return COLORS.primary;
+        return theme.primary;
     }
   };
 
   const getTextColor = () => {
-    if (variant === 'outline') return COLORS.primary;
+    if (disabled) return theme.mode === 'dark' ? '#64748b' : '#94a3b8';
+    if (variant === 'outline') return theme.primary;
     return '#ffffff';
   };
 
   return (
     <TouchableOpacity
-      activeOpacity={0.8}
+      activeOpacity={0.85}
       onPress={onPress}
       disabled={disabled || loading}
       style={[
         styles.button,
         { backgroundColor: getBackgroundColor() },
-        variant === 'outline' && styles.outlineButton,
-        variant !== 'outline' && !disabled && SHADOWS.small,
+        variant === 'outline' && {
+          borderWidth: 1.5,
+          borderColor: theme.primary,
+        },
+        variant === 'primary' && !disabled && SHADOWS.medium,
         style,
       ]}
     >
@@ -69,15 +76,11 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.radiusMd,
     gap: 8,
   },
-  outlineButton: {
-    borderWidth: 1.5,
-    borderColor: COLORS.primary,
-  },
   text: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 0.3,
   },
 });
 
 export default CustomButton;
-

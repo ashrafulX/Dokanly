@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SIZES } from '../constants/theme';
+import { SIZES } from '../constants/theme';
+import { useAppTheme } from '../context/ThemeContext';
 
 const CustomInput = ({
   label,
@@ -17,17 +18,26 @@ const CustomInput = ({
   style,
   ...props
 }) => {
+  const { theme } = useAppTheme();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
   return (
     <View style={[styles.container, style]}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && (
+        <Text style={[styles.label, { color: theme.text }]}>{label}</Text>
+      )}
       <View
         style={[
           styles.inputWrapper,
-          isFocused && styles.inputFocused,
-          !!error && styles.inputError,
+          {
+            backgroundColor: theme.inputBg,
+            borderColor: isFocused
+              ? theme.primary
+              : error
+              ? theme.danger
+              : theme.border,
+          },
           multiline && { minHeight: 80, alignItems: 'flex-start' },
         ]}
       >
@@ -35,16 +45,20 @@ const CustomInput = ({
           <Ionicons
             name={iconName}
             size={20}
-            color={isFocused ? COLORS.primary : COLORS.textMuted}
+            color={isFocused ? theme.primary : theme.textMuted}
             style={styles.icon}
           />
         )}
         <TextInput
-          style={[styles.input, multiline && styles.multilineInput]}
+          style={[
+            styles.input,
+            { color: theme.text },
+            multiline && styles.multilineInput,
+          ]}
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          placeholderTextColor="#94a3b8"
+          placeholderTextColor={theme.mode === 'dark' ? '#64748b' : '#94a3b8'}
           secureTextEntry={secureTextEntry && !isPasswordVisible}
           keyboardType={keyboardType}
           onFocus={() => setIsFocused(true)}
@@ -62,12 +76,14 @@ const CustomInput = ({
             <Ionicons
               name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
               size={20}
-              color={COLORS.textMuted}
+              color={theme.textMuted}
             />
           </TouchableOpacity>
         )}
       </View>
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {error && (
+        <Text style={[styles.errorText, { color: theme.danger }]}>{error}</Text>
+      )}
     </View>
   );
 };
@@ -80,24 +96,14 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.text,
     marginBottom: 6,
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
     borderWidth: 1.5,
-    borderColor: COLORS.border,
     borderRadius: SIZES.radiusMd,
     paddingHorizontal: 14,
-  },
-  inputFocused: {
-    borderColor: COLORS.primary,
-    backgroundColor: '#ffffff',
-  },
-  inputError: {
-    borderColor: COLORS.danger,
   },
   icon: {
     marginRight: 10,
@@ -106,7 +112,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 12,
     fontSize: 15,
-    color: COLORS.text,
   },
   multilineInput: {
     textAlignVertical: 'top',
@@ -117,10 +122,9 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 12,
-    color: COLORS.danger,
     marginTop: 4,
+    fontWeight: '500',
   },
 });
 
 export default CustomInput;
-

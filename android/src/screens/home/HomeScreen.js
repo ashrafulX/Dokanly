@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,8 +14,9 @@ import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../api/client';
 import ProductCard from '../../components/ProductCard';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { COLORS, SIZES, SHADOWS } from '../../constants/theme';
+import { SIZES, SHADOWS } from '../../constants/theme';
 import { useCart } from '../../context/CartContext';
+import { useAppTheme } from '../../context/ThemeContext';
 
 const HomeScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
@@ -25,6 +26,7 @@ const HomeScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const { cartItemCount } = useCart();
+  const { theme, isDarkMode, toggleTheme } = useAppTheme();
 
   useEffect(() => {
     fetchInitialData();
@@ -39,7 +41,6 @@ const HomeScreen = ({ navigation }) => {
   const fetchCategories = async () => {
     try {
       const res = await apiClient.get('/categories/');
-      // Django rest framework nested / pagination might return array or results
       const data = res.data.results || res.data;
       setCategories(Array.isArray(data) ? data : []);
     } catch (e) {
@@ -80,50 +81,101 @@ const HomeScreen = ({ navigation }) => {
 
   const renderHeader = () => (
     <View style={styles.headerContainer}>
-      {/* Top Banner */}
+      {/* Top Brand Bar */}
       <View style={styles.topBar}>
-        <View>
-          <Text style={styles.greeting}>Welcome to</Text>
-          <Text style={styles.brand}>Dokanly Store 🛍️</Text>
+        <View style={styles.brandContainer}>
+          <View style={[styles.logoIcon, { backgroundColor: theme.primaryLight }]}>
+            <Ionicons name="bag-handle" size={22} color={theme.primary} />
+          </View>
+          <View>
+            <Text style={[styles.brandTitle, { color: theme.text }]}>
+              Dokan<Text style={{ color: theme.primary }}>ly</Text>
+            </Text>
+            <Text style={[styles.brandSubtitle, { color: theme.textMuted }]}>
+              Discover & Shop Quality
+            </Text>
+          </View>
         </View>
-        <TouchableOpacity
-          style={styles.cartIconContainer}
-          onPress={() => navigation.navigate('CartTab')}
-        >
-          <Ionicons name="cart-outline" size={24} color={COLORS.text} />
-          {cartItemCount > 0 && (
-            <View style={styles.cartBadge}>
-              <Text style={styles.cartBadgeText}>{cartItemCount}</Text>
-            </View>
-          )}
-        </TouchableOpacity>
+
+        <View style={styles.topActions}>
+          {/* Theme Toggle Button */}
+          <TouchableOpacity
+            style={[
+              styles.actionBtn,
+              { backgroundColor: theme.surface, borderColor: theme.border },
+            ]}
+            onPress={toggleTheme}
+            activeOpacity={0.7}
+          >
+            <Ionicons
+              name={isDarkMode ? 'sunny-outline' : 'moon-outline'}
+              size={20}
+              color={isDarkMode ? '#fbbf24' : theme.text}
+            />
+          </TouchableOpacity>
+
+          {/* Cart Quick Button */}
+          <TouchableOpacity
+            style={[
+              styles.actionBtn,
+              { backgroundColor: theme.surface, borderColor: theme.border },
+            ]}
+            onPress={() => navigation.navigate('CartTab')}
+          >
+            <Ionicons name="cart-outline" size={20} color={theme.text} />
+            {cartItemCount > 0 && (
+              <View style={[styles.cartBadge, { backgroundColor: theme.primary }]}>
+                <Text style={styles.cartBadgeText}>{cartItemCount}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
 
-      {/* Search Input */}
-      <View style={[styles.searchBox, SHADOWS.small]}>
-        <Ionicons name="search-outline" size={20} color={COLORS.textMuted} />
+      {/* Search Bar */}
+      <View
+        style={[
+          styles.searchBox,
+          {
+            backgroundColor: theme.inputBg,
+            borderColor: theme.border,
+          },
+          theme.mode === 'light' && SHADOWS.light,
+        ]}
+      >
+        <Ionicons name="search-outline" size={19} color={theme.textMuted} />
         <TextInput
-          style={styles.searchInput}
-          placeholder="Search products, brands..."
-          placeholderTextColor="#94a3b8"
+          style={[styles.searchInput, { color: theme.text }]}
+          placeholder="Search products, brands, categories..."
+          placeholderTextColor={theme.mode === 'dark' ? '#64748b' : '#94a3b8'}
           value={searchQuery}
           onChangeText={handleSearch}
           clearButtonMode="while-editing"
         />
         {searchQuery.length > 0 && (
           <TouchableOpacity onPress={() => handleSearch('')}>
-            <Ionicons name="close-circle" size={18} color={COLORS.textMuted} />
+            <Ionicons name="close-circle" size={18} color={theme.textMuted} />
           </TouchableOpacity>
         )}
       </View>
 
-      {/* Category Pills */}
+      {/* Category Horizontal Filter Pills */}
       <View style={styles.categoriesSection}>
-        <Text style={styles.sectionTitle}>Categories</Text>
+        <View style={styles.sectionHeaderRow}>
+          <Text style={[styles.sectionTitle, { color: theme.text }]}>
+            Categories
+          </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('CategoriesTab')}>
+            <Text style={[styles.seeAllText, { color: theme.primary }]}>
+              See All
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         <FlatList
           horizontal
           showsHorizontalScrollIndicator={false}
-          data={[{ id: null, name: 'All' }, ...categories]}
+          data={[{ id: null, name: 'All Products' }, ...categories]}
           keyExtractor={(item) => (item.id !== null ? item.id.toString() : 'all')}
           contentContainerStyle={styles.categoryList}
           renderItem={({ item }) => {
@@ -133,17 +185,25 @@ const HomeScreen = ({ navigation }) => {
                 onPress={() => handleCategorySelect(item.id)}
                 style={[
                   styles.categoryPill,
-                  isSelected && styles.categoryPillActive,
+                  {
+                    backgroundColor: isSelected ? theme.primary : theme.surface,
+                    borderColor: isSelected ? theme.primary : theme.border,
+                  },
                 ]}
               >
                 <Text
                   style={[
                     styles.categoryPillText,
-                    isSelected && styles.categoryPillTextActive,
+                    {
+                      color: isSelected ? '#ffffff' : theme.textMuted,
+                      fontWeight: isSelected ? '700' : '600',
+                    },
                   ]}
                 >
                   {item.name}
-                  {item.product_count !== undefined && !isSelected ? ` (${item.product_count})` : ''}
+                  {item.product_count !== undefined && !isSelected
+                    ? ` (${item.product_count})`
+                    : ''}
                 </Text>
               </TouchableOpacity>
             );
@@ -151,8 +211,8 @@ const HomeScreen = ({ navigation }) => {
         />
       </View>
 
-      <Text style={[styles.sectionTitle, { marginTop: 16, marginBottom: 8 }]}>
-        {selectedCategory ? 'Filtered Products' : 'Popular Products'}
+      <Text style={[styles.sectionTitle, { color: theme.text, marginTop: 12, marginBottom: 8 }]}>
+        {selectedCategory ? 'Filtered Products' : 'Featured Products'}
       </Text>
     </View>
   );
@@ -162,8 +222,11 @@ const HomeScreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
+      <StatusBar
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        backgroundColor={theme.background}
+      />
       <FlatList
         data={products}
         numColumns={2}
@@ -182,22 +245,26 @@ const HomeScreen = ({ navigation }) => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={[COLORS.primary]}
+            colors={[theme.primary]}
           />
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Ionicons name="search-outline" size={48} color="#cbd5e1" />
-            <Text style={styles.emptyText}>No products found.</Text>
+            <Ionicons name="basket-outline" size={56} color={theme.textMuted} />
+            <Text style={[styles.emptyText, { color: theme.textMuted }]}>
+              No products found matching your search.
+            </Text>
             <TouchableOpacity
-              style={styles.resetBtn}
+              style={[styles.resetBtn, { backgroundColor: theme.primaryLight }]}
               onPress={() => {
                 setSelectedCategory(null);
                 setSearchQuery('');
                 fetchProducts(null, '');
               }}
             >
-              <Text style={styles.resetBtnText}>Clear Filters</Text>
+              <Text style={[styles.resetBtnText, { color: theme.primary }]}>
+                Clear All Filters
+              </Text>
             </TouchableOpacity>
           </View>
         }
@@ -209,15 +276,14 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.background,
   },
   listContainer: {
     paddingHorizontal: 12,
     paddingBottom: 24,
   },
   headerContainer: {
-    paddingTop: 16,
-    paddingBottom: 8,
+    paddingTop: 12,
+    paddingBottom: 6,
   },
   topBar: {
     flexDirection: 'row',
@@ -226,31 +292,45 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingHorizontal: 4,
   },
-  greeting: {
-    fontSize: 13,
-    color: COLORS.textMuted,
+  brandContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  logoIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  brandTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    letterSpacing: -0.5,
+  },
+  brandSubtitle: {
+    fontSize: 11,
     fontWeight: '500',
+    marginTop: 1,
   },
-  brand: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: COLORS.text,
+  topActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
-  cartIconContainer: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#ffffff',
+  actionBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.border,
   },
   cartBadge: {
     position: 'absolute',
-    top: -2,
-    right: -2,
-    backgroundColor: COLORS.danger,
+    top: -3,
+    right: -3,
     minWidth: 18,
     height: 18,
     borderRadius: 9,
@@ -261,58 +341,53 @@ const styles = StyleSheet.create({
   cartBadgeText: {
     color: '#ffffff',
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
     borderRadius: SIZES.radiusMd,
     paddingHorizontal: 14,
     height: 48,
     borderWidth: 1,
-    borderColor: COLORS.border,
     marginBottom: 16,
   },
   searchInput: {
     flex: 1,
     marginLeft: 8,
-    fontSize: 15,
-    color: COLORS.text,
+    fontSize: 14,
   },
   categoriesSection: {
     marginBottom: 8,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: COLORS.text,
+  sectionHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 10,
     paddingHorizontal: 4,
   },
+  sectionTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    paddingHorizontal: 4,
+  },
+  seeAllText: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
   categoryList: {
-    paddingVertical: 4,
+    paddingVertical: 2,
     gap: 8,
   },
   categoryPill: {
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: SIZES.radiusFull,
-    backgroundColor: '#ffffff',
     borderWidth: 1,
-    borderColor: COLORS.border,
-  },
-  categoryPillActive: {
-    backgroundColor: COLORS.primary,
-    borderColor: COLORS.primary,
   },
   categoryPillText: {
     fontSize: 13,
-    fontWeight: '600',
-    color: COLORS.textMuted,
-  },
-  categoryPillTextActive: {
-    color: '#ffffff',
   },
   emptyContainer: {
     alignItems: 'center',
@@ -321,21 +396,19 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     marginTop: 12,
-    fontSize: 16,
-    color: COLORS.textMuted,
+    fontSize: 15,
+    textAlign: 'center',
   },
   resetBtn: {
-    marginTop: 12,
+    marginTop: 14,
     paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: COLORS.primaryLight,
+    paddingHorizontal: 18,
     borderRadius: SIZES.radiusSm,
   },
   resetBtnText: {
-    color: COLORS.primary,
-    fontWeight: '600',
+    fontWeight: '700',
+    fontSize: 13,
   },
 });
 
 export default HomeScreen;
-

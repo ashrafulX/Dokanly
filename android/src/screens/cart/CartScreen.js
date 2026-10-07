@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  Image,
   TouchableOpacity,
   SafeAreaView,
   Alert,
@@ -12,26 +11,30 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
+import { useAppTheme } from '../../context/ThemeContext';
 import CustomButton from '../../components/CustomButton';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { COLORS, SIZES, SHADOWS } from '../../constants/theme';
+import { SIZES, SHADOWS } from '../../constants/theme';
 
 const CartScreen = ({ navigation }) => {
   const { isAuthenticated } = useAuth();
   const { cart, loading, updateQuantity, removeFromCart, checkout, totalPrice, refreshCart } =
     useCart();
+  const { theme } = useAppTheme();
   const [checkingOut, setCheckingOut] = useState(false);
 
   if (!isAuthenticated) {
     return (
-      <SafeAreaView style={styles.centerContainer}>
-        <Ionicons name="lock-closed-outline" size={64} color={COLORS.textMuted} />
-        <Text style={styles.authTitle}>Login Required</Text>
-        <Text style={styles.authSubtitle}>
-          Please sign in to view your shopping cart and complete your orders.
+      <SafeAreaView style={[styles.centerContainer, { backgroundColor: theme.background }]}>
+        <View style={[styles.authIconCircle, { backgroundColor: theme.primaryLight }]}>
+          <Ionicons name="lock-closed" size={36} color={theme.primary} />
+        </View>
+        <Text style={[styles.authTitle, { color: theme.text }]}>Sign In Required</Text>
+        <Text style={[styles.authSubtitle, { color: theme.textMuted }]}>
+          Please sign in to manage your shopping cart and place orders.
         </Text>
         <CustomButton
-          title="Go to Sign In"
+          title="Sign In Now"
           onPress={() => navigation.navigate('ProfileTab')}
           style={styles.authBtn}
         />
@@ -53,11 +56,11 @@ const CartScreen = ({ navigation }) => {
 
     Alert.alert(
       'Confirm Order',
-      `Are you sure you want to place this order for $${Number(totalPrice).toFixed(2)}?`,
+      `Are you ready to place this order for $${Number(totalPrice).toFixed(2)}?`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Place Order',
+          text: 'Confirm & Pay',
           onPress: async () => {
             setCheckingOut(true);
             const res = await checkout();
@@ -69,7 +72,7 @@ const CartScreen = ({ navigation }) => {
                 `Your order #${res.order?.id?.slice(0, 8)} has been placed.`,
                 [
                   {
-                    text: 'View Orders',
+                    text: 'Track Order',
                     onPress: () => navigation.navigate('OrdersTab'),
                   },
                 ]
@@ -84,16 +87,18 @@ const CartScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
       {items.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Ionicons name="cart-outline" size={80} color="#cbd5e1" />
-          <Text style={styles.emptyTitle}>Your Cart is Empty</Text>
-          <Text style={styles.emptySubtitle}>
+          <View style={[styles.emptyIconCircle, { backgroundColor: theme.surface }]}>
+            <Ionicons name="cart-outline" size={56} color={theme.textMuted} />
+          </View>
+          <Text style={[styles.emptyTitle, { color: theme.text }]}>Your Cart is Empty</Text>
+          <Text style={[styles.emptySubtitle, { color: theme.textMuted }]}>
             Looks like you haven't added anything to your cart yet.
           </Text>
           <CustomButton
-            title="Start Shopping"
+            title="Explore Products"
             onPress={() => navigation.navigate('HomeTab')}
             style={styles.shopNowBtn}
           />
@@ -107,15 +112,24 @@ const CartScreen = ({ navigation }) => {
             onRefresh={refreshCart}
             refreshing={loading}
             renderItem={({ item }) => (
-              <View style={[styles.itemCard, SHADOWS.small]}>
+              <View
+                style={[
+                  styles.itemCard,
+                  {
+                    backgroundColor: theme.card,
+                    borderColor: theme.border,
+                  },
+                  theme.mode === 'light' && SHADOWS.light,
+                ]}
+              >
                 <View style={styles.itemInfo}>
-                  <Text style={styles.itemName} numberOfLines={2}>
+                  <Text style={[styles.itemName, { color: theme.text }]} numberOfLines={2}>
                     {item.product?.name}
                   </Text>
-                  <Text style={styles.unitPrice}>
+                  <Text style={[styles.unitPrice, { color: theme.textMuted }]}>
                     ${Number(item.product?.price).toFixed(2)} each
                   </Text>
-                  <Text style={styles.subtotalText}>
+                  <Text style={[styles.subtotalText, { color: theme.primary }]}>
                     Subtotal: ${Number(item.total_price).toFixed(2)}
                   </Text>
                 </View>
@@ -126,22 +140,29 @@ const CartScreen = ({ navigation }) => {
                     onPress={() => removeFromCart(item.id)}
                     style={styles.deleteBtn}
                   >
-                    <Ionicons name="trash-outline" size={18} color={COLORS.danger} />
+                    <Ionicons name="trash-outline" size={19} color={theme.danger} />
                   </TouchableOpacity>
 
-                  <View style={styles.quantityRow}>
+                  <View
+                    style={[
+                      styles.quantityRow,
+                      { backgroundColor: theme.surface, borderColor: theme.border },
+                    ]}
+                  >
                     <TouchableOpacity
-                      style={styles.qtyBtn}
+                      style={[styles.qtyBtn, { backgroundColor: theme.card }]}
                       onPress={() => updateQuantity(item.id, item.quantity - 1)}
                     >
-                      <Ionicons name="remove" size={16} color={COLORS.text} />
+                      <Ionicons name="remove" size={15} color={theme.text} />
                     </TouchableOpacity>
-                    <Text style={styles.qtyValue}>{item.quantity}</Text>
+                    <Text style={[styles.qtyValue, { color: theme.text }]}>
+                      {item.quantity}
+                    </Text>
                     <TouchableOpacity
-                      style={styles.qtyBtn}
+                      style={[styles.qtyBtn, { backgroundColor: theme.card }]}
                       onPress={() => updateQuantity(item.id, item.quantity + 1)}
                     >
-                      <Ionicons name="add" size={16} color={COLORS.text} />
+                      <Ionicons name="add" size={15} color={theme.text} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -150,10 +171,21 @@ const CartScreen = ({ navigation }) => {
           />
 
           {/* Checkout Footer */}
-          <View style={[styles.checkoutBar, SHADOWS.medium]}>
+          <View
+            style={[
+              styles.checkoutBar,
+              {
+                backgroundColor: theme.card,
+                borderTopColor: theme.border,
+              },
+              theme.mode === 'light' && SHADOWS.light,
+            ]}
+          >
             <View style={styles.priceSummary}>
-              <Text style={styles.totalLabel}>Total Amount:</Text>
-              <Text style={styles.totalAmount}>${Number(totalPrice).toFixed(2)}</Text>
+              <Text style={[styles.totalLabel, { color: theme.textMuted }]}>Total Amount</Text>
+              <Text style={[styles.totalAmount, { color: theme.primary }]}>
+                ${Number(totalPrice).toFixed(2)}
+              </Text>
             </View>
 
             <CustomButton
@@ -173,7 +205,6 @@ const CartScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.background,
   },
   container: {
     flex: 1,
@@ -184,13 +215,11 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   itemCard: {
-    backgroundColor: '#ffffff',
     borderRadius: SIZES.radiusMd,
     padding: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderWidth: 1,
-    borderColor: COLORS.border,
   },
   itemInfo: {
     flex: 1,
@@ -198,18 +227,15 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontSize: 15,
-    fontWeight: '700',
-    color: COLORS.text,
+    fontWeight: '800',
   },
   unitPrice: {
     fontSize: 13,
-    color: COLORS.textMuted,
-    marginTop: 4,
+    marginTop: 3,
   },
   subtotalText: {
     fontSize: 14,
-    fontWeight: '700',
-    color: COLORS.primary,
+    fontWeight: '800',
     marginTop: 8,
   },
   actionCol: {
@@ -222,33 +248,29 @@ const styles = StyleSheet.create({
   quantityRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f1f5f9',
     borderRadius: SIZES.radiusSm,
-    padding: 2,
+    padding: 3,
+    borderWidth: 1,
   },
   qtyBtn: {
     width: 28,
     height: 28,
-    backgroundColor: '#ffffff',
     borderRadius: 6,
     justifyContent: 'center',
     alignItems: 'center',
   },
   qtyValue: {
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '800',
     marginHorizontal: 10,
-    color: COLORS.text,
   },
   checkoutBar: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#ffffff',
     padding: 20,
     borderTopWidth: 1,
-    borderTopColor: COLORS.border,
   },
   priceSummary: {
     flexDirection: 'row',
@@ -257,13 +279,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   totalLabel: {
-    fontSize: 16,
-    color: COLORS.textMuted,
+    fontSize: 15,
+    fontWeight: '600',
   },
   totalAmount: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: COLORS.text,
+    fontSize: 24,
+    fontWeight: '900',
   },
   checkoutBtn: {
     width: '100%',
@@ -274,18 +295,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 24,
   },
+  authIconCircle: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   authTitle: {
     fontSize: 20,
     fontWeight: '800',
-    color: COLORS.text,
-    marginTop: 16,
   },
   authSubtitle: {
     fontSize: 14,
-    color: COLORS.textMuted,
     textAlign: 'center',
     marginTop: 6,
-    marginBottom: 20,
+    marginBottom: 24,
+    lineHeight: 20,
   },
   authBtn: {
     minWidth: 180,
@@ -296,23 +323,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 24,
   },
+  emptyIconCircle: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   emptyTitle: {
     fontSize: 20,
     fontWeight: '800',
-    color: COLORS.text,
-    marginTop: 16,
   },
   emptySubtitle: {
     fontSize: 14,
-    color: COLORS.textMuted,
     textAlign: 'center',
     marginTop: 6,
     marginBottom: 20,
   },
   shopNowBtn: {
-    minWidth: 160,
+    minWidth: 170,
   },
 });
 
 export default CartScreen;
-

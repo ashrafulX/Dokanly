@@ -1,10 +1,14 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import {
+  NavigationContainer,
+  DefaultTheme,
+  DarkTheme,
+} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS } from '../constants/theme';
 import { useCart } from '../context/CartContext';
+import { useAppTheme } from '../context/ThemeContext';
 
 // Screens
 import HomeScreen from '../screens/home/HomeScreen';
@@ -24,27 +28,33 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
   const { cartItemCount } = useCart();
+  const { theme, isDarkMode } = useAppTheme();
 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: true,
         headerStyle: {
-          backgroundColor: '#ffffff',
+          backgroundColor: theme.headerBg,
         },
         headerTitleStyle: {
-          fontWeight: '700',
-          color: COLORS.text,
+          fontWeight: '800',
+          color: theme.text,
+          fontSize: 18,
         },
         headerShadowVisible: false,
-        tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: COLORS.textMuted,
+        tabBarActiveTintColor: theme.primary,
+        tabBarInactiveTintColor: theme.textMuted,
         tabBarStyle: {
-          backgroundColor: '#ffffff',
-          borderTopColor: COLORS.border,
+          backgroundColor: theme.tabBarBg,
+          borderTopColor: theme.tabBarBorder,
           height: 60,
           paddingBottom: 8,
           paddingTop: 8,
+        },
+        tabBarLabelStyle: {
+          fontWeight: '700',
+          fontSize: 11,
         },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
@@ -82,8 +92,10 @@ const TabNavigator = () => {
           title: 'My Cart',
           tabBarBadge: cartItemCount > 0 ? cartItemCount : null,
           tabBarBadgeStyle: {
-            backgroundColor: COLORS.danger,
+            backgroundColor: theme.primary,
+            color: '#ffffff',
             fontSize: 10,
+            fontWeight: '800',
           },
         }}
       />
@@ -102,17 +114,31 @@ const TabNavigator = () => {
 };
 
 const AppNavigator = () => {
+  const { theme, isDarkMode } = useAppTheme();
+
+  const navigationTheme = {
+    ...(isDarkMode ? DarkTheme : DefaultTheme),
+    colors: {
+      ...(isDarkMode ? DarkTheme.colors : DefaultTheme.colors),
+      background: theme.background,
+      card: theme.card,
+      text: theme.text,
+      border: theme.border,
+      primary: theme.primary,
+    },
+  };
+
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={navigationTheme}>
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
-            backgroundColor: '#ffffff',
+            backgroundColor: theme.headerBg,
           },
-          headerTintColor: COLORS.primary,
+          headerTintColor: theme.primary,
           headerTitleStyle: {
-            fontWeight: '700',
-            color: COLORS.text,
+            fontWeight: '800',
+            color: theme.text,
           },
           headerShadowVisible: false,
         }}
@@ -158,4 +184,3 @@ const AppNavigator = () => {
 };
 
 export default AppNavigator;
-

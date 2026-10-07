@@ -12,12 +12,14 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
+import { useAppTheme } from '../../context/ThemeContext';
 import CustomButton from '../../components/CustomButton';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { COLORS, SIZES, SHADOWS } from '../../constants/theme';
+import { SIZES, SHADOWS } from '../../constants/theme';
 
 const OrdersScreen = ({ navigation }) => {
   const { isAuthenticated } = useAuth();
+  const { theme } = useAppTheme();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -76,25 +78,27 @@ const OrdersScreen = ({ navigation }) => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'Delivered':
-        return { bg: '#dcfce7', text: COLORS.accent };
+        return { bg: 'rgba(16, 185, 129, 0.12)', text: theme.accent };
       case 'Shipped':
       case 'Ready To Ship':
-        return { bg: '#e0f2fe', text: COLORS.primary };
+        return { bg: theme.primaryLight, text: theme.primary };
       case 'Canceled':
-        return { bg: '#fee2e2', text: COLORS.danger };
+        return { bg: 'rgba(239, 68, 68, 0.12)', text: theme.danger };
       case 'Not Paid':
       default:
-        return { bg: '#fef3c7', text: COLORS.warning };
+        return { bg: 'rgba(245, 158, 11, 0.12)', text: theme.warning };
     }
   };
 
   if (!isAuthenticated) {
     return (
-      <SafeAreaView style={styles.centerContainer}>
-        <Ionicons name="receipt-outline" size={64} color={COLORS.textMuted} />
-        <Text style={styles.authTitle}>Track Your Orders</Text>
-        <Text style={styles.authSubtitle}>
-          Sign in to view your order history, delivery statuses, and invoices.
+      <SafeAreaView style={[styles.centerContainer, { backgroundColor: theme.background }]}>
+        <View style={[styles.authIconCircle, { backgroundColor: theme.primaryLight }]}>
+          <Ionicons name="receipt" size={36} color={theme.primary} />
+        </View>
+        <Text style={[styles.authTitle, { color: theme.text }]}>Track Your Orders</Text>
+        <Text style={[styles.authSubtitle, { color: theme.textMuted }]}>
+          Sign in to view your order history, delivery statuses, and receipts.
         </Text>
         <CustomButton
           title="Sign In Now"
@@ -110,7 +114,7 @@ const OrdersScreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
       <FlatList
         data={orders}
         keyExtractor={(item) => item.id.toString()}
@@ -119,7 +123,7 @@ const OrdersScreen = ({ navigation }) => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={[COLORS.primary]}
+            colors={[theme.primary]}
           />
         }
         renderItem={({ item }) => {
@@ -133,16 +137,25 @@ const OrdersScreen = ({ navigation }) => {
 
           return (
             <TouchableOpacity
-              style={[styles.orderCard, SHADOWS.small]}
+              style={[
+                styles.orderCard,
+                {
+                  backgroundColor: theme.card,
+                  borderColor: theme.border,
+                },
+                theme.mode === 'light' && SHADOWS.light,
+              ]}
               activeOpacity={0.8}
               onPress={() => navigation.navigate('OrderDetail', { order: item })}
             >
               <View style={styles.cardHeader}>
                 <View>
-                  <Text style={styles.orderIdText}>
+                  <Text style={[styles.orderIdText, { color: theme.text }]}>
                     Order #{item.id.slice(0, 8).toUpperCase()}
                   </Text>
-                  <Text style={styles.orderDate}>{formattedDate}</Text>
+                  <Text style={[styles.orderDate, { color: theme.textMuted }]}>
+                    {formattedDate}
+                  </Text>
                 </View>
                 <View style={[styles.statusBadge, { backgroundColor: statusStyle.bg }]}>
                   <Text style={[styles.statusText, { color: statusStyle.text }]}>
@@ -151,26 +164,28 @@ const OrdersScreen = ({ navigation }) => {
                 </View>
               </View>
 
-              <View style={styles.cardDivider} />
+              <View style={[styles.cardDivider, { backgroundColor: theme.border }]} />
 
               <View style={styles.cardFooter}>
-                <Text style={styles.itemsSummary}>
+                <Text style={[styles.itemsSummary, { color: theme.textMuted }]}>
                   {itemCount} {itemCount === 1 ? 'item' : 'items'}
                 </Text>
-                <Text style={styles.totalPrice}>
+                <Text style={[styles.totalPrice, { color: theme.primary }]}>
                   ${Number(item.total_price).toFixed(2)}
                 </Text>
               </View>
 
               {item.status !== 'Canceled' && item.status !== 'Delivered' && (
-                <View style={styles.actionRow}>
+                <View style={[styles.actionRow, { borderTopColor: theme.border }]}>
                   <TouchableOpacity
                     style={styles.cancelBtn}
                     onPress={() => handleCancelOrder(item.id)}
                   >
-                    <Text style={styles.cancelBtnText}>Cancel Order</Text>
+                    <Text style={[styles.cancelBtnText, { color: theme.danger }]}>
+                      Cancel Order
+                    </Text>
                   </TouchableOpacity>
-                  <Ionicons name="chevron-forward" size={18} color={COLORS.textMuted} />
+                  <Ionicons name="chevron-forward" size={17} color={theme.textMuted} />
                 </View>
               )}
             </TouchableOpacity>
@@ -178,13 +193,15 @@ const OrdersScreen = ({ navigation }) => {
         }}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Ionicons name="bag-check-outline" size={72} color="#cbd5e1" />
-            <Text style={styles.emptyTitle}>No Orders Yet</Text>
-            <Text style={styles.emptySubtitle}>
+            <View style={[styles.emptyIconCircle, { backgroundColor: theme.surface }]}>
+              <Ionicons name="bag-check-outline" size={56} color={theme.textMuted} />
+            </View>
+            <Text style={[styles.emptyTitle, { color: theme.text }]}>No Orders Yet</Text>
+            <Text style={[styles.emptySubtitle, { color: theme.textMuted }]}>
               You haven't placed any orders yet. Discover our items and order now!
             </Text>
             <CustomButton
-              title="Shop Products"
+              title="Start Shopping"
               onPress={() => navigation.navigate('HomeTab')}
               style={{ marginTop: 16 }}
             />
@@ -198,18 +215,15 @@ const OrdersScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.background,
   },
   listContainer: {
     padding: 16,
     gap: 12,
   },
   orderCard: {
-    backgroundColor: '#ffffff',
     borderRadius: SIZES.radiusMd,
     padding: 16,
     borderWidth: 1,
-    borderColor: COLORS.border,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -218,12 +232,10 @@ const styles = StyleSheet.create({
   },
   orderIdText: {
     fontSize: 15,
-    fontWeight: '700',
-    color: COLORS.text,
+    fontWeight: '800',
   },
   orderDate: {
     fontSize: 12,
-    color: COLORS.textMuted,
     marginTop: 2,
   },
   statusBadge: {
@@ -233,11 +245,10 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   cardDivider: {
     height: 1,
-    backgroundColor: COLORS.border,
     marginVertical: 12,
   },
   cardFooter: {
@@ -246,13 +257,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   itemsSummary: {
-    fontSize: 14,
-    color: COLORS.textMuted,
+    fontSize: 13,
+    fontWeight: '500',
   },
   totalPrice: {
     fontSize: 16,
-    fontWeight: '800',
-    color: COLORS.primary,
+    fontWeight: '900',
   },
   actionRow: {
     flexDirection: 'row',
@@ -261,15 +271,13 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 10,
     borderTopWidth: 1,
-    borderTopColor: '#f1f5f9',
   },
   cancelBtn: {
     paddingVertical: 4,
   },
   cancelBtnText: {
     fontSize: 13,
-    color: COLORS.danger,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   centerContainer: {
     flex: 1,
@@ -277,18 +285,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 24,
   },
+  authIconCircle: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   authTitle: {
     fontSize: 20,
     fontWeight: '800',
-    color: COLORS.text,
-    marginTop: 16,
   },
   authSubtitle: {
     fontSize: 14,
-    color: COLORS.textMuted,
     textAlign: 'center',
     marginTop: 6,
-    marginBottom: 20,
+    marginBottom: 24,
+    lineHeight: 20,
   },
   authBtn: {
     minWidth: 180,
@@ -299,19 +313,23 @@ const styles = StyleSheet.create({
     paddingVertical: 80,
     paddingHorizontal: 24,
   },
+  emptyIconCircle: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   emptyTitle: {
     fontSize: 20,
     fontWeight: '800',
-    color: COLORS.text,
-    marginTop: 16,
   },
   emptySubtitle: {
     fontSize: 14,
-    color: COLORS.textMuted,
     textAlign: 'center',
     marginTop: 6,
   },
 });
 
 export default OrdersScreen;
-
