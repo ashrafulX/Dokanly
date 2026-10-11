@@ -5,9 +5,9 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  SafeAreaView,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
@@ -25,7 +25,7 @@ const CartScreen = ({ navigation }) => {
 
   if (!isAuthenticated) {
     return (
-      <SafeAreaView style={[styles.centerContainer, { backgroundColor: theme.background }]}>
+      <SafeAreaView edges={['top', 'left', 'right']} style={[styles.centerContainer, { backgroundColor: theme.background }]}>
         <View style={[styles.authIconCircle, { backgroundColor: theme.primaryLight }]}>
           <Ionicons name="lock-closed" size={36} color={theme.primary} />
         </View>
@@ -87,7 +87,7 @@ const CartScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
+    <SafeAreaView edges={['left', 'right']} style={[styles.safeArea, { backgroundColor: theme.background }]}>
       {items.length === 0 ? (
         <View style={styles.emptyContainer}>
           <View style={[styles.emptyIconCircle, { backgroundColor: theme.surface }]}>

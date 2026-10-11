@@ -6,8 +6,8 @@ import {
   FlatList,
   TouchableOpacity,
   RefreshControl,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../api/client';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -47,7 +47,7 @@ const CategoryListScreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
+    <SafeAreaView edges={['left', 'right']} style={[styles.safeArea, { backgroundColor: theme.background }]}>
       <FlatList
         data={categories}
         keyExtractor={(item) => item.id.toString()}

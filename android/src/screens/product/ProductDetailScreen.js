@@ -10,8 +10,8 @@ import {
   Modal,
   Alert,
   Dimensions,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../api/client';
 import { SIZES, SHADOWS } from '../../constants/theme';
@@ -147,7 +147,7 @@ const ProductDetailScreen = ({ route, navigation }) => {
   const inStock = product.stock > 0;
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
+    <SafeAreaView edges={['left', 'right', 'bottom']} style={[styles.safeArea, { backgroundColor: theme.background }]}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Image Slider */}
         <View

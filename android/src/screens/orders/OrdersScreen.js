@@ -5,10 +5,10 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  SafeAreaView,
   RefreshControl,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
@@ -92,7 +92,7 @@ const OrdersScreen = ({ navigation }) => {
 
   if (!isAuthenticated) {
     return (
-      <SafeAreaView style={[styles.centerContainer, { backgroundColor: theme.background }]}>
+      <SafeAreaView edges={['top', 'left', 'right']} style={[styles.centerContainer, { backgroundColor: theme.background }]}>
         <View style={[styles.authIconCircle, { backgroundColor: theme.primaryLight }]}>
           <Ionicons name="receipt" size={36} color={theme.primary} />
         </View>
@@ -114,7 +114,7 @@ const OrdersScreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
+    <SafeAreaView edges={['left', 'right']} style={[styles.safeArea, { backgroundColor: theme.background }]}>
       <FlatList
         data={orders}
         keyExtractor={(item) => item.id.toString()}

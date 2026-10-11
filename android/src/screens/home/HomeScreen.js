@@ -7,9 +7,9 @@ import {
   TextInput,
   TouchableOpacity,
   RefreshControl,
-  SafeAreaView,
   StatusBar,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import apiClient from '../../api/client';
 import ProductCard from '../../components/ProductCard';
@@ -84,8 +84,8 @@ const HomeScreen = ({ navigation }) => {
       {/* Top Brand Bar */}
       <View style={styles.topBar}>
         <View style={styles.brandContainer}>
-          <View style={[styles.logoIcon, { backgroundColor: theme.primaryLight }]}>
-            <Ionicons name="bag-handle" size={22} color={theme.primary} />
+          <View style={[styles.logoIcon, { backgroundColor: theme.primary }]}>
+            <Text style={styles.logoLetter}>D</Text>
           </View>
           <View>
             <Text style={[styles.brandTitle, { color: theme.text }]}>
@@ -222,7 +222,7 @@ const HomeScreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
+    <SafeAreaView edges={['top', 'left', 'right']} style={[styles.safeArea, { backgroundColor: theme.background }]}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={theme.background}
@@ -298,11 +298,17 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   logoIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 38,
+    height: 38,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  logoLetter: {
+    color: '#ffffff',
+    fontSize: 22,
+    fontWeight: '900',
+    letterSpacing: -0.5,
   },
   brandTitle: {
     fontSize: 20,
