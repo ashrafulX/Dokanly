@@ -4,6 +4,7 @@ import Home from '../pages/Home/Home';
 import About from '../About';
 import MainLayout from '../layouts/MainLayout';
 import Product from '../pages/Products/Product';
+import Ondevelopment from '../ondevelopment';
 
 const AppRoute = () => {
     return (
@@ -14,6 +15,7 @@ const AppRoute = () => {
                 <Route path='about' element={ <About/> }/>
 
             </Route>
+            {/* <Route path='*' element={ <Ondevelopment/> }/> */}
         </Routes>
     );
 };
