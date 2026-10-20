@@ -2,8 +2,10 @@ import React from 'react';
 
 const Home = () => {
     return (
-        <div>
-            <h1 className='bg-red-600'>Homie</h1>
+        <div className="min-h-screen bg-white p-6">
+            <h1 className="text-3xl font-bold text-gray-900">
+                Welcome to Dokanly
+            </h1>
         </div>
     );
 };
