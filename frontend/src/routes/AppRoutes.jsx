@@ -1,21 +1,20 @@
 import React from 'react';
 import { Route, Router, Routes } from 'react-router';
-import Home from '../pages/Home/Home';
-import About from '../About';
+import Home from '../pages/Home';
+import About from '../pages/About';
 import MainLayout from '../layouts/MainLayout';
-import Product from '../pages/Products/Product';
-import Ondevelopment from '../ondevelopment';
+
 
 const AppRoute = () => {
     return (
         <Routes>
             <Route  element={<MainLayout/>}>
                 <Route path='/' element={ <Home /> } />
-                <Route path='products' element={ <Product/> } />
+                    
                 <Route path='about' element={ <About/> }/>
 
             </Route>
-            {/* <Route path='*' element={ <Ondevelopment/> }/> */}
+
         </Routes>
     );
 };
