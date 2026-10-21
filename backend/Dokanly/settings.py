@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'corsheaders',
     'django.contrib.staticfiles',
     'drf_yasg',
     'rest_framework',
@@ -60,6 +61,7 @@ if DEBUG:
     INSTALLED_APPS+=['debug_toolbar']
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -92,6 +94,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Dokanly.wsgi.app'
 
+
+CORS_ALLOWED_ORIGINS = [
+    "https://dokanly.vercel.app",
+    "http://localhost:5173",
+]
 
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
