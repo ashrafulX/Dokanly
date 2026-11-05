@@ -98,6 +98,7 @@ WSGI_APPLICATION = 'Dokanly.wsgi.app'
 CORS_ALLOWED_ORIGINS = [
     "https://dokanly.vercel.app",
     "http://localhost:5173",
+    "http://192.168.0.100:5173",
 ]
 
 # Database
