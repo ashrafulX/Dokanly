@@ -10,35 +10,34 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
-// Product Showcase Images
+// Images from assets folder
 import bookImg from '../../assets/image/book.png';
 import techImg from '../../assets/image/technology.png';
 import fashionImg from '../../assets/image/fashion.png';
 
-// Completely New Generated Modern Studio Background Images
 import bgBooks from '../../assets/image/carousel-bg-books.jpg';
 import bgTech from '../../assets/image/carousel-bg-tech.jpg';
 import bgFashion from '../../assets/image/carousel-bg-fashion.jpg';
 
-// Interactive Tailwind-styled Navigation Buttons
+// Responsive Navigation Buttons
 const SwiperNavButtons = () => {
   const swiper = useSwiper();
   return (
-    <div className="absolute inset-y-0 inset-x-2 sm:inset-x-6 z-20 pointer-events-none flex items-center justify-between">
+    <div className="absolute inset-y-0 inset-x-2 sm:inset-x-4 md:inset-x-8 z-20 pointer-events-none flex items-center justify-between">
       <button
         onClick={() => swiper.slidePrev()}
-        className="pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/90 hover:bg-white text-gray-700 hover:text-gray-950 border border-gray-200/80 shadow-md backdrop-blur-sm flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer group"
+        className="pointer-events-auto w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 hover:bg-white text-gray-700 hover:text-red-600 border border-gray-200/80 shadow-md backdrop-blur-sm flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
         aria-label="Previous Slide"
       >
-        <FiChevronLeft className="text-lg sm:text-xl transition-transform group-hover:-translate-x-0.5" />
+        <FiChevronLeft className="text-lg sm:text-xl" />
       </button>
 
       <button
         onClick={() => swiper.slideNext()}
-        className="pointer-events-auto w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/90 hover:bg-white text-gray-700 hover:text-gray-950 border border-gray-200/80 shadow-md backdrop-blur-sm flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer group"
+        className="pointer-events-auto w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 hover:bg-white text-gray-700 hover:text-red-600 border border-gray-200/80 shadow-md backdrop-blur-sm flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
         aria-label="Next Slide"
       >
-        <FiChevronRight className="text-lg sm:text-xl transition-transform group-hover:translate-x-0.5" />
+        <FiChevronRight className="text-lg sm:text-xl" />
       </button>
     </div>
   );
@@ -49,49 +48,46 @@ const HeroCarousel = () => {
     {
       id: 1,
       badge: 'Bestselling Literature',
-      title: 'Explore the World of Books',
-      subtitle: 'Discover thousands of books across genres. Knowledge, inspiration, and timeless stories at your fingertips.',
+      title: 'Over the Siren Book Collections',
+      subtitle: 'Discover timeless stories, knowledge & inspiration. Find yours!',
       image: bookImg,
       bgImage: bgBooks,
-      buttonText: 'Shop Books',
-      tagColor: 'amber',
+      buttonText: 'Shop Now',
     },
     {
       id: 2,
       badge: 'Latest Gadgets & Tech',
-      title: 'Latest Technology & Gadgets',
-      subtitle: 'Upgrade your lifestyle with cutting-edge electronics, smart devices, and high-performance accessories.',
+      title: 'Next-Gen Smart Devices & Audio',
+      subtitle: 'Upgrade your daily lifestyle with cutting-edge electronics & audio.',
       image: techImg,
       bgImage: bgTech,
-      buttonText: 'Shop Gadgets',
-      tagColor: 'blue',
+      buttonText: 'Shop Now',
     },
     {
       id: 3,
       badge: 'Trending Styles',
       title: 'Trendy Fashion for Everyone',
-      subtitle: 'Stay stylish with our curated clothing, premium footwear, and modern lifestyle collections.',
+      subtitle: 'Stay stylish with curated clothing, premium footwear & modern gear.',
       image: fashionImg,
       bgImage: bgFashion,
-      buttonText: 'Shop Fashion',
-      tagColor: 'rose',
+      buttonText: 'Shop Now',
     },
   ];
 
   return (
     <div 
-      className="relative w-full overflow-hidden bg-white"
+      className="relative w-full overflow-hidden bg-white border-b border-gray-100"
       style={{
-        '--swiper-theme-color': '#e11d48',
+        '--swiper-theme-color': '#dc2626',
         '--swiper-pagination-bullet-inactive-color': '#9ca3af',
-        '--swiper-pagination-bullet-inactive-opacity': '0.45',
+        '--swiper-pagination-bullet-inactive-opacity': '0.4',
       }}
     >
       <Swiper
         spaceBetween={0}
         slidesPerView={1}
         autoplay={{
-          delay: 3000,
+          delay: 4000,
           disableOnInteraction: false,
           pauseOnMouseEnter: true,
         }}
@@ -99,11 +95,10 @@ const HeroCarousel = () => {
           clickable: true,
         }}
         loop={true}
-        speed={700}
+        speed={600}
         modules={[Autoplay, Pagination, Navigation]}
-        className="w-full"
+        className="w-full !pb-5 sm:!pb-6"
       >
-        {/* Interactive Tailwind Arrow Controls */}
         <SwiperNavButtons />
 
         {slides.map((slide) => (
@@ -115,7 +110,6 @@ const HeroCarousel = () => {
               image={slide.image}
               bgImage={slide.bgImage}
               buttonText={slide.buttonText}
-              tagColor={slide.tagColor}
             />
           </SwiperSlide>
         ))}

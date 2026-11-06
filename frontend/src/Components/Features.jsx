@@ -1,45 +1,51 @@
-import { FaShoppingCart } from "react-icons/fa";
-import { MdVerified } from "react-icons/md";
-import { FaTags } from "react-icons/fa";
-import { BsShieldLock } from "react-icons/bs";
+import React from "react";
+import { FiTruck, FiShield, FiTag, FiLock } from "react-icons/fi";
 
 const Features = () => {
   const features = [
     {
-      icon: <FaShoppingCart className="text-red-400 text-4xl" />,
+      icon: <FiTruck className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />,
       title: "Free Delivery",
-      description:
-        "Get your orders delivered at no extra cost, fast and hassle-free.",
+      description: "Get your orders delivered fast and hassle-free.",
     },
     {
-      icon: <MdVerified className="text-red-400 text-4xl" />,
+      icon: <FiShield className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />,
       title: "Quality Guarantee",
-      description:
-        "We ensure top-notch quality for every product you purchase.",
+      description: "100% verified top-notch quality on every item.",
     },
     {
-      icon: <FaTags className="text-red-400 text-4xl" />,
+      icon: <FiTag className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />,
       title: "Daily Offers",
-      description: "Exclusive discounts and special deals available every day.",
+      description: "Exclusive member discounts and special drops daily.",
     },
     {
-      icon: <BsShieldLock className="text-red-400 text-4xl" />,
+      icon: <FiLock className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />,
       title: "100% Secure Payment",
-      description:
-        "Your payment information is encrypted and completely secure.",
+      description: "Your payment details are encrypted & fully safe.",
     },
   ];
 
   return (
-    <section className="px-8 py-15">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-        {features.map((feature, index) => (
-          <div key={index} className="flex flex-col items-center text-center">
-            {feature.icon}
-            <h3 className="text-lg font-semibold mt-2">{feature.title}</h3>
-            <p className="text-gray-500 text-sm">{feature.description}</p>
-          </div>
-        ))}
+    <section className="w-full bg-white py-3 sm:py-4.5 border-b border-gray-100">
+      <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+          {features.map((feature, index) => (
+            <div
+              key={index}
+              className="flex flex-col items-center text-center p-3 sm:p-4 md:p-5 rounded-2xl bg-white border border-gray-100 hover:border-red-200/80 hover:shadow-md transition-all duration-200"
+            >
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-red-50 text-red-600 flex items-center justify-center mb-2 sm:mb-2.5">
+                {feature.icon}
+              </div>
+              <h3 className="text-xs sm:text-sm md:text-base font-bold text-gray-900">
+                {feature.title}
+              </h3>
+              <p className="mt-1 text-[11px] sm:text-xs text-gray-500 leading-relaxed max-w-[200px]">
+                {feature.description}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
