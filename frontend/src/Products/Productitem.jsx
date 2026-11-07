@@ -9,13 +9,13 @@ const Productitem = ({ product }) => {
     );
 
     return (
-        <div className="group relative flex flex-col w-full h-full bg-white rounded-xl border border-gray-200 hover:border-red-300 hover:shadow-md transition-all duration-200 overflow-hidden">
+        <div className="group relative flex flex-col w-full h-full bg-white rounded-2xl border border-gray-100 hover:border-red-200 hover:shadow-md transition-all duration-200 overflow-hidden">
             
             {/* Image Container with matching shape */}
             <div className="relative h-52 sm:h-56 w-full bg-gray-50 flex items-center justify-center p-4 overflow-hidden border-b border-gray-100">
                 <img
                     src={imgSrc}
-                    alt={product.name || "Product"}
+                    alt={product?.name || "Product"}
                     onError={() => setImgSrc(default_img)}
                     className="h-full w-full object-contain group-hover:scale-105 transition-transform duration-300"
                 />
@@ -33,22 +33,22 @@ const Productitem = ({ product }) => {
             {/* Product Info */}
             <div className="flex flex-col flex-grow p-4 sm:p-5 w-full">
                 <h3 className="text-sm sm:text-base font-bold text-gray-900 group-hover:text-red-600 transition-colors duration-200 line-clamp-1">
-                    {product.name}
+                    {product?.name}
                 </h3>
 
                 <p className="mt-1 text-xs sm:text-sm text-gray-500 line-clamp-2 flex-grow leading-relaxed">
-                    {product.description || "High quality product crafted for everyday use."}
+                    {product?.description || "High quality product crafted for everyday use."}
                 </p>
 
                 <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between gap-2 w-full">
                     <div>
                         <span className="text-[11px] text-gray-400 block font-medium">Price</span>
                         <span className="text-base sm:text-lg font-bold text-gray-900 truncate block">
-                            ${product.price}
+                            ${product?.price}
                         </span>
                     </div>
 
-                    <button className="shrink-0 flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded-lg shadow-sm transition-colors cursor-pointer">
+                    <button className="shrink-0 flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-xs transition-colors cursor-pointer">
                         <span>Buy Now</span>
                         <svg 
                             xmlns="http://www.w3.org/2000/svg" 

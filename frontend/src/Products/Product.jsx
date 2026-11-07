@@ -17,7 +17,8 @@ const Product = () => {
     useEffect(() => {
         apiClient.get('/products')
             .then((res) => {
-                setProducts(res.data?.results || []);
+                const data = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+                setProducts(data);
             })
             .catch((err) => {
                 setError(err.response?.data?.message || err.message || 'Failed to load products');
@@ -26,11 +27,12 @@ const Product = () => {
     }, []);
 
     return (
-        <section className="w-full py-12 sm:py-16 bg-white overflow-hidden">
+        <section className="w-full py-8 sm:py-12 bg-white">
+            
             <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16">
 
                 {/* Section Header */}
-                <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 gap-4">
+                <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4">
                     <div>
                         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 text-red-600 text-xs font-semibold uppercase tracking-wider mb-2">
                             <span className="w-2 h-2 rounded-full bg-red-600"></span>
@@ -64,13 +66,13 @@ const Product = () => {
 
                 {/* Loading Skeleton */}
                 {loading ? (
-                    <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
                         {[1, 2, 3, 4].map((n) => (
-                            <div key={n} className="w-full bg-white rounded-xl p-4 border border-gray-100 shadow-sm animate-pulse">
-                                <div className="h-48 bg-gray-100 rounded-lg mb-4"></div>
+                            <div key={n} className="w-full bg-white rounded-2xl p-4 border border-gray-100 shadow-xs animate-pulse">
+                                <div className="h-48 bg-gray-100 rounded-xl mb-4"></div>
                                 <div className="h-4 bg-gray-100 rounded w-3/4 mb-2"></div>
                                 <div className="h-3 bg-gray-100 rounded w-full mb-4"></div>
-                                <div className="flex justify-between items-center pt-2 border-t border-gray-100">
+                                <div className="flex justify-between items-center pt-3 border-t border-gray-100">
                                     <div className="h-5 bg-gray-100 rounded w-16"></div>
                                     <div className="h-8 bg-gray-100 rounded-lg w-20"></div>
                                 </div>
@@ -87,7 +89,7 @@ const Product = () => {
                                 loop={products.length > 4}
                                 speed={600}
                                 autoplay={{
-                                    delay: 3000,
+                                    delay: 3500,
                                     disableOnInteraction: false,
                                     pauseOnMouseEnter: true,
                                 }}
@@ -109,7 +111,7 @@ const Product = () => {
                                         spaceBetween: 24,
                                     },
                                 }}
-                                className="w-full !pb-10 !pt-2 [&_.swiper-button-next]:!top-[40%] [&_.swiper-button-prev]:!top-[40%] [&_.swiper-button-next]:!w-9 [&_.swiper-button-prev]:!w-9 [&_.swiper-button-next]:!h-9 [&_.swiper-button-prev]:!h-9 [&_.swiper-button-next]:bg-white [&_.swiper-button-prev]:bg-white [&_.swiper-button-next]:text-gray-700 [&_.swiper-button-prev]:text-gray-700 [&_.swiper-button-next]:rounded-full [&_.swiper-button-prev]:rounded-full [&_.swiper-button-next]:shadow-md [&_.swiper-button-prev]:shadow-md [&_.swiper-button-next]:border [&_.swiper-button-prev]:border [&_.swiper-button-next]:border-gray-200 [&_.swiper-button-prev]:border-gray-200 [&_.swiper-button-next:after]:!text-xs [&_.swiper-button-prev:after]:!text-xs hover:[&_.swiper-button-next]:text-red-600 hover:[&_.swiper-button-prev]:text-red-600 hover:[&_.swiper-button-next]:border-red-600 hover:[&_.swiper-button-prev]:border-red-600"
+                                className="w-full !pb-8 !pt-1 [&_.swiper-button-next]:!top-[40%] [&_.swiper-button-prev]:!top-[40%] [&_.swiper-button-next]:!w-9 [&_.swiper-button-prev]:!w-9 [&_.swiper-button-next]:!h-9 [&_.swiper-button-prev]:!h-9 [&_.swiper-button-next]:bg-white [&_.swiper-button-prev]:bg-white [&_.swiper-button-next]:text-gray-700 [&_.swiper-button-prev]:text-gray-700 [&_.swiper-button-next]:rounded-full [&_.swiper-button-prev]:rounded-full [&_.swiper-button-next]:shadow-md [&_.swiper-button-prev]:shadow-md [&_.swiper-button-next]:border [&_.swiper-button-prev]:border [&_.swiper-button-next]:border-gray-200 [&_.swiper-button-prev]:border-gray-200 [&_.swiper-button-next:after]:!text-xs [&_.swiper-button-prev:after]:!text-xs hover:[&_.swiper-button-next]:text-red-600 hover:[&_.swiper-button-prev]:text-red-600 hover:[&_.swiper-button-next]:border-red-600 hover:[&_.swiper-button-prev]:border-red-600"
                             >
                                 {products.map((product) => (
                                     <SwiperSlide key={product.id} className="w-full !h-auto flex">
@@ -118,7 +120,7 @@ const Product = () => {
                                 ))}
                             </Swiper>
                         ) : (
-                            <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-100">
+                            <div className="text-center py-12 bg-gray-50 rounded-2xl border border-gray-100">
                                 <p className="text-gray-500 font-medium">No products available at the moment.</p>
                             </div>
                         )}
