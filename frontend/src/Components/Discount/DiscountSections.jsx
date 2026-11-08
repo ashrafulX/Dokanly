@@ -1,13 +1,12 @@
 import React from 'react';
 import { FiArrowRight, FiShoppingBag } from 'react-icons/fi';
-
+import image from '../../assets/image/banner-image1 (1).png'
+import DiscountTimer from './DiscountTimer';
 const DiscountSections = ({
-  badge = 'Trending Collection',
-  title = 'Over the Siren Book Collections',
-  subtitle = 'Discover timeless stories, knowledge & inspiration. Find yours!',
-  image,
+  badge = 'Discount!!',
+  title = ' 30% Disount on all book items.Hurry Up!!!',
   bgImage,
-  buttonText = 'Shop Now',
+  buttonText = 'Shop Collection',
 }) => {
   return (
     <section
@@ -19,8 +18,18 @@ const DiscountSections = ({
 
       {/* Main Container: Text on LEFT, Image on RIGHT, centered towards middle */}
       <div className="relative z-10 max-w-5xl lg:max-w-6xl mx-auto w-full flex flex-col-reverse md:flex-row items-center justify-between gap-4 sm:gap-8 md:gap-10 lg:gap-16">
+
+         <div className="w-full md:w-5/12 flex items-center justify-center md:justify-end shrink-0">
+          <div className="relative flex items-center justify-center p-2">
+            <img
+              src={image}
+              alt={title}
+              className="h-40 sm:h-52 md:h-64 lg:h-76 xl:h-88 w-auto max-w-[85%] md:max-w-full object-contain drop-shadow-xl transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
         
-        {/* Left Column: Typography & Action Button */}
+        {/* Left Column: Typography & Action Button (Moved First) */}
         <div className="w-full md:w-7/12 flex flex-col items-center md:items-start text-center md:text-left space-y-2.5 sm:space-y-3.5 lg:space-y-4 min-w-0">
           {badge && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-600 border border-red-200 shadow-xs">
@@ -32,10 +41,8 @@ const DiscountSections = ({
           <h1 className="text-2xl sm:text-3xl md:text-3xl lg:text-5xl font-black text-gray-900 leading-[1.15] tracking-tight">
             {title}
           </h1>
-
-          <p className="text-gray-600 text-xs sm:text-sm md:text-base max-w-md leading-relaxed">
-            {subtitle}
-          </p>
+          
+           <DiscountTimer/>
 
           {/* Standard Red Pill CTA Button */}
           <div className="pt-1 sm:pt-2">
@@ -47,16 +54,8 @@ const DiscountSections = ({
           </div>
         </div>
 
-        {/* Right Column: Product Image */}
-        <div className="w-full md:w-5/12 flex items-center justify-center md:justify-end shrink-0">
-          <div className="relative flex items-center justify-center p-2">
-            <img
-              src={image}
-              alt={title}
-              className="h-40 sm:h-52 md:h-64 lg:h-76 xl:h-88 w-auto max-w-[85%] md:max-w-full object-contain drop-shadow-xl transition-transform duration-300 hover:scale-105"
-            />
-          </div>
-        </div>
+        {/* Right Column: Product Image (Moved Second) */}
+       
 
       </div>
     </section>
