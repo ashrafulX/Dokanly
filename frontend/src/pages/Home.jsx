@@ -11,7 +11,6 @@ const Home = () => {
         <div className="bg-white">
             <HeroCarousel />
             <Features />
-            {/* <CategoryItems /> */}
             <Categories />
             <Product />
             <DiscountSections />

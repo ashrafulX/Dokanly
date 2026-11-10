@@ -27,7 +27,7 @@ const Navbar = () => {
                 <details className="group">
                     <summary className="px-3.5 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50 transition-colors cursor-pointer list-none flex items-center gap-1">
                         <span>Categories</span>
-                        <FiChevronDown className="w-3.5 h-3.5 transition-transform duration-200 group-open:rotate-180" />
+                        {/* <FiChevronDown className="w-3.5 h-3.5 transition-transform duration-200 group-open:rotate-180" /> */}
                     </summary>
                     <ul className="p-2 bg-white w-48 rounded-xl shadow-lg border border-gray-100 z-50 lg:mt-2 space-y-1">
                         <li>
@@ -44,7 +44,7 @@ const Navbar = () => {
                 </details>
             </li>
             <li>
-                <NavLink to="/deals" className={navLinkClass}>Flash Deals</NavLink>
+                <NavLink to="/shop" className={navLinkClass}>Shop</NavLink>
             </li>
         </>
     );
