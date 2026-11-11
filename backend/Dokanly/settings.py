@@ -98,6 +98,7 @@ WSGI_APPLICATION = 'Dokanly.wsgi.app'
 CORS_ALLOWED_ORIGINS = [
     "https://dokanly.vercel.app",
     "http://localhost:5173",
+    "http://localhost:1111",
     "http://192.168.0.100:5173",
 ]
 
@@ -219,7 +220,7 @@ SIMPLE_JWT = {
 DJOSER={
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'activate/{uid}/{token}',
-    'SEND_ACTIVATION_EMAIL': True,
+    'SEND_ACTIVATION_EMAIL': False,
     'SERIALIZERS':{
         'user_create':'users.serializers.UserCreateSerializer',
         'current_user':'users.serializers.Userserializer'

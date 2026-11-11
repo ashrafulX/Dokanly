@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@import "./styles.css";
+
+/* Base Custom Utilities */
+@layer base {
+  body {
+    background-color: #ffffff;
+    color: #111827;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+}
