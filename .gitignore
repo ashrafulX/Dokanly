@@ -1,0 +1,55 @@
+# Environment & Secret Credentials
+.env
+*.env
+*.env.*
+*.env.local
+*.env.production
+backend/.env
+frontend/.env
+frontend/.env.local
+token.json
+
+# Databases & Local Data
+db.sqlite3
+*.sqlite3
+
+# Python Virtual Environments & Cache
+venv/
+backend/venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Static & Media Storage
+fixtures/
+staticfiles/
+
+# Node & Package Managers
+node_modules/
+frontend/node_modules/
+android/node_modules/
+dist/
+frontend/dist/
+.expo/
+android/.expo/
+web-build/
+package-lock.json
+
+# IDE & Editor Directories
+.vscode/
+.idea/
+.kilo/
+*.swp
+*.swo
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
