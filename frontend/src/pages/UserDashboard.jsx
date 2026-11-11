@@ -47,14 +47,26 @@ const UserDashboard = () => {
     setPhone(user.phone_number || '');
     setAddress(user.address || '');
 
-    // Fetch real orders from Django backend
+    // Fetch real orders from Django backend and merge with local placed orders
     apiClient.get('/orders/')
       .then((res) => {
-        const data = Array.isArray(res.data) ? res.data : (res.data?.results || []);
-        setOrders(data);
+        const backendOrders = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+        let localOrders = [];
+        try {
+          localOrders = JSON.parse(localStorage.getItem('dokanly_orders') || '[]');
+        } catch {}
+
+        const ids = new Set(backendOrders.map(o => String(o.id)));
+        const uniqueLocal = localOrders.filter(o => !ids.has(String(o.id)));
+        setOrders([...uniqueLocal, ...backendOrders]);
       })
       .catch((err) => {
-        console.warn('Orders fetch error or empty:', err.message);
+        console.warn('Orders fetch notice:', err.message);
+        let localOrders = [];
+        try {
+          localOrders = JSON.parse(localStorage.getItem('dokanly_orders') || '[]');
+        } catch {}
+        setOrders(localOrders);
       })
       .finally(() => setLoadingOrders(false));
   }, [user, navigate]);
@@ -325,8 +337,11 @@ const UserDashboard = () => {
                     </div>
 
                     <div className="py-3 text-xs text-gray-600 space-y-1">
-                      <p>Payment Method: <strong className="text-gray-900">SSLCommerz Sandbox Demo</strong></p>
-                      <p>Shipping to: <span className="text-gray-900">{user.address || 'Standard Delivery Address'}</span></p>
+                      <p>Payment Method: <strong className="text-gray-900">{ord.payment_method || 'SSLCommerz Sandbox Demo'}</strong></p>
+                      <p>Delivery Address: <span className="text-gray-900 font-semibold">{ord.shipping_address || user.address || 'Standard Delivery Address'}</span></p>
+                      {ord.contact_phone && (
+                        <p>Contact Phone: <span className="font-mono text-gray-900 font-semibold">{ord.contact_phone}</span></p>
+                      )}
                     </div>
 
                     <div className="pt-2 border-t border-gray-100 flex justify-between items-center">

@@ -127,6 +127,19 @@ const FakePaymentModal = ({ isOpen, onClose, totalAmount, shippingDetails = {}, 
           </span>
         </div>
 
+        {/* Delivery Address Pill Banner */}
+        {shippingDetails.address && (
+          <div className="bg-slate-100 border-b border-gray-200 px-4 py-2 flex items-center justify-between text-xs text-gray-700">
+            <div className="flex items-center gap-2 truncate">
+              <span className="font-bold text-gray-900">🚚 Shipping To:</span>
+              <span className="truncate">{shippingDetails.recipient || 'Customer'} • {shippingDetails.address}</span>
+            </div>
+            {shippingDetails.phone && (
+              <span className="font-mono text-gray-500 shrink-0 text-[11px] font-semibold">{shippingDetails.phone}</span>
+            )}
+          </div>
+        )}
+
         {/* Modal Body */}
         {paymentSuccessData ? (
           /* Payment Success Receipt */
@@ -162,6 +175,14 @@ const FakePaymentModal = ({ isOpen, onClose, totalAmount, shippingDetails = {}, 
               <div className="flex justify-between py-1 border-b border-gray-200">
                 <span className="text-gray-500">Method Used:</span>
                 <strong className="text-gray-900">{paymentSuccessData.method}</strong>
+              </div>
+              <div className="flex justify-between py-1 border-b border-gray-200">
+                <span className="text-gray-500">Delivery Address:</span>
+                <strong className="text-gray-900 text-right max-w-[220px] truncate">{paymentSuccessData.shippingAddress || 'Profile Address'}</strong>
+              </div>
+              <div className="flex justify-between py-1 border-b border-gray-200">
+                <span className="text-gray-500">Contact Phone:</span>
+                <strong className="text-gray-900 font-mono">{paymentSuccessData.contactPhone || 'N/A'}</strong>
               </div>
               <div className="flex justify-between py-1 pt-2 text-sm font-extrabold">
                 <span className="text-gray-700">Total Paid:</span>
